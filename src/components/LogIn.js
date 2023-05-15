@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { getAuth, signInWithEmailAndPassword  } from 'firebase/auth';
 import app from '../firebase.js'
 import { getFirestore, collection, getDocs } from "firebase/firestore";
 const db = getFirestore(app) ;
