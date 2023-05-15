@@ -1,16 +1,16 @@
 import React, { useState } from "react";
 import "./SignIn.css"
 import { createUserWithEmailAndPassword , getAuth} from "firebase/auth";
-import { collection, addDoc  } from 'firebase/firestore';
-import { auth, db } from '../firebase'; // Import the Auth and Firestore instances from firebase.js
+import { collection, addDoc, getFirestore } from 'firebase/firestore';
+import app from '../firebase'; // Import the Auth and Firestore instances from firebase.js
 // import app from '../firebase'; // Import the Firebase configuration
-// const db = getFirestore(app);
+const db = getFirestore(app);
+const auth = getAuth();
 
-function RegisterPage(props) {
+function RegisterPage() {
   const [selectedRole, setSelectedRole] = useState("");
   // const auth = props.auth;
-  const auth = getAuth();
-  const db = props.db;
+  // const db = props.db;
   //=========================makeing some changes
   const [formData, setFormData] = useState({    
     full_name: "",
