@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { setDoc, doc, collection, addDoc , getFirestore } from 'firebase/firestore';
-import app from '../firebase'; // Import the Firebase configuration
+import {app, auth, db } from '../firebase'; // Import the Auth and Firestore instances from firebase.js
 import './TicketForm.css'
-const db = getFirestore(app);
+// const db = getFirestore(app);
 const TicketForm = () => {
     const [formData, setFormData] = useState({
         fullName: "",

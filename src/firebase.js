@@ -1,9 +1,10 @@
 
-import { getAuth } from 'firebase/auth';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { getFirestore} from 'firebase/firestore'
 import React, { useState, useEffect } from 'react';
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
+
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
@@ -16,17 +17,17 @@ const firebaseConfig = {
   measurementId: "G-MZCFP5ZHC5"
 };
 
-// Initialize Firebase
-// const app = initializeApp(firebaseConfig);
-// const analytics = getAnalytics(app);
-const app = initializeApp(firebaseConfig);
-// const auth = getAuth(app); // get the Auth instance from the app
-// const db = getFirestore(app);
+export const logInWithEmailAndPassword = async (email, password) => {
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+  } catch (err) {
+    console.error(err);
+    alert(err.message);
+  }
+};
 
-
+export const app = initializeApp(firebaseConfig);
 // Get the Auth instance
 export const auth = getAuth(app);
-
 // Get the Firestore instance
 export const db = getFirestore(app);
-export default app;
