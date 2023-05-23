@@ -149,3 +149,5 @@ const TicketForm = () => {
 
 export default TicketForm;
 
+{/* <button onClick={() => handleQueueSelection('14:00')}>14:00</button>
+<button onClick={() => handleQueueSelection('15:00')}>15:00</button> */}

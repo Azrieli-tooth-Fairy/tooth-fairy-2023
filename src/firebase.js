@@ -1,9 +1,7 @@
-
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { getFirestore} from 'firebase/firestore'
 import React, { useState, useEffect } from 'react';
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -17,9 +15,11 @@ const firebaseConfig = {
   measurementId: "G-MZCFP5ZHC5"
 };
 
-export const logInWithEmailAndPassword = async (email, password) => {
+export const logInWithEmailAndPassword = async (email, password, isAuth) => {
   try {
     await signInWithEmailAndPassword(auth, email, password);
+    isAuth(true);
+    console.log("login succses!")
   } catch (err) {
     console.error(err);
     alert(err.message);

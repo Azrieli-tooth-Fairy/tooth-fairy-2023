@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import "./SignIn.css"
-import { createUserWithEmailAndPassword , getAuth} from "firebase/auth";
-import { collection, addDoc, getFirestore } from 'firebase/firestore';
-import {app, auth, db } from '../firebase'; // Import the Auth and Firestore instances from firebase.js
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { collection, addDoc } from 'firebase/firestore';
+import { auth, db } from '../firebase'; // Import the Auth and Firestore instances from firebase.js
 // import app from '../firebase'; // Import the Firebase configuration
 // const db = getFirestore(app);
 // const auth = getAuth();

@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect } from 'react';
+import { setDoc, doc, collection, addDoc , getFirestore , onSnapshot, query } from 'firebase/firestore';
+import {app, auth, db } from '../firebase'; // Import the Auth and Firestore instances from firebase.js
 import emailjs from 'emailjs-com';
 
 const ClinicBookingPage = () => {
-  const [clinic, setClinic] = useState('');
   const [selectedQueue, setSelectedQueue] = useState('');
   const [selectedDate, setSelectedDate] = useState('');
   const [reason, setReason] = useState('');
@@ -10,7 +11,8 @@ const ClinicBookingPage = () => {
   const [referralText, setReferralText] = useState('');
 
   const handleClinicChange = (event) => {
-    setClinic(event.target.value);
+    // setClinic(event.target.value);
+    setFormData({...formData,["clinic"]:event.target.value})
     setSelectedQueue('');
     setSelectedDate('');
     setReason('');
@@ -18,25 +20,9 @@ const ClinicBookingPage = () => {
     setReferralText('');
   };
 
-  const handleQueueSelection = (queue) => {
-    setSelectedQueue(queue);
-  };
-
-  const handleDateSelection = (date) => {
-    setSelectedDate(date);
-  };
-
-  const handleReasonChange = (event) => {
-    setReason(event.target.value);
-  };
-
-  const handleReferralClinicChange = (event) => {
-    setReferralClinic(event.target.value);
-  };
-
-  const handleReferralTextChange = (event) => {
-    setReferralText(event.target.value);
-  };
+  function handleSelection(event) {
+    setFormData({ ...formData, [event.target.name]: event.target.value });
+  }
 
   // Helper function to generate Sunday dates
   const generateSundayDates = () => {
@@ -73,16 +59,8 @@ const generateFirstAidDates = () => {
     return dates;
   };
 
-// this func hendel the submit bnt. here were going send the mail to the admin and he will 
-// aprove or deny the request!
-  // const handleSubmit = (event) => {
-  //   event.preventDefault();
-
-  //   // Handle form submission logic here
-  //   console.log('Submitted!');
-  // };
 //--------------------------------------------========-----EMAILJS - here were gonna send the admin the needed appointment
-  const sendMail = (e) => {
+  const sendMailEmergency = (e) => {
     e.preventDefault();
 
     var id = document.getElementById("idCard").value;
@@ -105,51 +83,179 @@ const generateFirstAidDates = () => {
     emailjs
         .send(serviceID, templateID, params,"IY_q-mRXPfxKZKMHs") // need to hide this key!
         .then((res)=> {
-            
             // console.log(res);
             alert("הודעתך נשלחה בהצלחה");
         })
 
 }
+// here we need to send mail to admin that the user sign in to firstAid clinic
+  const sendMailFirstAid = (e) => {
+    e.preventDefault();
+
+    var id = document.getElementById("idCard").value;
+    var social_worker_name = document.getElementById("social_worker_name").value;
+    var social_worker_number = document.getElementById("social_worker_number").value;
+    var referral_clinic = document.getElementById("referral_clinic").value;
+    var referral_reason = document.getElementById("referral_reason").value;
+
+    const serviceID = "toothFariyAdmin";
+    const templateID = ""; // need to create new tamplate for first aid
+    var params = {
+        id: id,
+        social_worker_name: social_worker_name,
+        social_worker_number: social_worker_number,
+        referral_clinic: referral_clinic,
+        referral_reason: referral_reason
+    };
+
+    emailjs
+        .send(serviceID, templateID, params,"IY_q-mRXPfxKZKMHs") // need to hide this key!
+        .then((res)=> {
+            // console.log(res);
+            alert("הודעתך נשלחה בהצלחה");
+        })
+  }
+const [formData, setFormData] = useState({
+  idCard: "",
+  date: "",
+  queue: "",
+  clinic: "",
+  reason: "",
+  referralClinic: ""
+});
+//stopped here 22-05=> started to work on checking if there are avilble time on the db!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+const streamFormState = (snapshot, error) => {
+  const itemsColRef = collection(db, 'appointments')
+  const itemsQuery = query(itemsColRef)
+  return onSnapshot(itemsQuery, snapshot, error);
+};
+
+const [formState, setFormState] = useState({ //testing!
+  // apptAmount: [{date: "2023-05-28", queue: "14:00", count: 3},
+  //             {date: "2023-05-28", queue: "15:00", count: 4}]
+});
+  useEffect(() => {
+    const unsubscribe = streamState(
+        (querySnapshot) => {
+            const updatedState = 
+            querySnapshot.docs.map(docSnapshot => docSnapshot.data());
+            setFormState(updatedState);
+        },
+        (error) => setError('grocery-list-item-get-fail')
+    );
+    return unsubscribe;
+  }, [, setProducts]);
+
+const updateCount = (date, queue) => {
+  const updatedApptAmount = formState.apptAmount.map((item) => {
+    if (item.date === date && item.queue === queue) {
+      console.log(item.count)
+      return { ...item, count: item.count+1 };
+    }
+    return item;
+  });
+
+  setFormState((prevState) => ({
+    ...prevState,
+    apptAmount: updatedApptAmount
+  }));
+};
+
+const getCount = (date, queue) => {
+  return formState.apptAmount.find(
+    (item) => item.date === date && item.queue === queue
+  ).count;
+};
+ 
+const handleInputChange = (event) => {
+  const { id, value } = event.target;
+  setFormData((prevFormData) => ({
+    ...prevFormData,
+    [id]: value,
+  }));
+};
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  // Create a new document in the "tickets" collection with the form data
+  try {
+    const appointmentsCollectionRef = collection(db, 'appointments');
+    await addDoc(appointmentsCollectionRef, formData);
+    // Reset the form fields
+    console.log('Ticket submitted successfully!');
+
+    if(formData.clinic === 'emergency'){
+      sendMailEmergency(e);
+    }
+    else if(formData.clinic === 'firstAid'){
+      sendMailFirstAid(e);
+    }
+  } catch (error) {
+    console.error('Error submitting ticket:', error);
+  }
+};
 //-------------------------------------------------EMAILJS
   let content = null;
 
-  if (clinic === 'sunday') {
+  if (formData.clinic === 'sunday') {
     const sundayDates = generateSundayDates();
     content = (
       <div>
-        <label htmlFor="idCard">ID Card:</label>
-        <input type="number" id="idCard" required/>
+        <label htmlFor="idCard">ID Number:</label>
+        <input type="number" id="idCard" 
+          value={formData.idCard}
+          onChange={handleInputChange}   
+          required/>
 
         <h4>Select a Sunday date:</h4>
+        <select name = "date" value={formData.date} onChange={(e) => handleSelection(e)}>
+        <option value="">Available dates:</option>
         {sundayDates.map((date) => (
-          <button key={date} onClick={() => handleDateSelection(date)}>
+          <option key={date} value={date}>
             {date}
-          </button>
+          </option>
         ))}
+        </select>
 
-        {selectedDate && (
+        {formData.date && ( //if we have date so show the houres
           <div>
             {/* here we need to connect with the firebase so we could tell when there is avilble appointment */}
             <h4>Select a queue time:</h4>
-            <button onClick={() => handleQueueSelection('14:00')}>14:00</button>
-            <button onClick={() => handleQueueSelection('15:00')}>15:00</button>
-            {/* <h4>Select a queue time:</h4>
-            <button onClick={() => handleQueueSelection('14:00')}>14:00</button>
-            <button onClick={() => handleQueueSelection('15:00')}>15:00</button> */}
+            <select
+              name="queue"
+              value={formData.queue}
+              onChange={(e) => {
+                handleSelection(e);
+                updateCount(formData.date, e.target.value);
+              }}
+            >
+              <option value="">Select a queue time:</option>
+              <option
+                value="14:00"
+                disabled={getCount(formData.date, "14:00") >= 4}
+              >
+                14:00
+              </option>
+              <option
+                value="15:00"
+                disabled={getCount(formData.date, "15:00") >= 4}
+              >
+                15:00
+              </option>
+            </select>
+
           </div>
         )}
 
-        {selectedQueue && (
+        {formData.queue && (
           <div>
             <h3>Selected Queue:</h3>
-            <p>Date: {selectedDate}</p>
-            <p>Time: {selectedQueue}</p>
+            <p>Date: {formData.date}</p>
+            <p>Time: {formData.queue}</p>
           </div>
         )}
       </div>
     );
-  } else if (clinic === 'firstAid') {
+  } else if (formData.clinic === 'firstAid') {
     const firstAidDates = generateFirstAidDates();
     content = (
       <div>
@@ -158,7 +264,7 @@ const generateFirstAidDates = () => {
 
         <h4>Select a date for first aid:</h4>
         {firstAidDates.map((date) => (
-          <button key={date} onClick={() => handleDateSelection(date)}>
+          <button name="date" key={date} onClick={(e) => handleSelection(e)}>
             {date}
           </button>
         ))}
@@ -172,7 +278,7 @@ const generateFirstAidDates = () => {
         )}
       </div>
     );
-  } else if (clinic === 'emergency') {
+  } else if (formData.clinic === 'emergency') {
     content = (
       <div>
         <label htmlFor="idCard">ID:</label>
@@ -185,15 +291,16 @@ const generateFirstAidDates = () => {
         <input type="number" id="social_worker_number" required/>
 
         <h4>Reason for Referral:</h4>
-        <textarea value={reason} id = "referral_reason" onChange={handleReasonChange} required/>
+        <textarea name='reason' value={formData.reason} id = "referral_reason" onChange={(e) => handleSelection(e)} required/>
 
         <h4>Referral Clinic:</h4>
         <label>
           <input
             type="radio"
+            name="referralClinic"
             value="sundayClinic"
             checked={referralClinic === 'sundayClinic'}
-            onChange={handleReferralClinicChange}
+            onChange={(e) =>handleSelection(e)}
             id = "referral_clinic"
             required
           />
@@ -202,9 +309,10 @@ const generateFirstAidDates = () => {
         <label>
           <input
             type="radio"
+            name="referralClinic"
             value="firstAidClinic"
             checked={referralClinic === 'firstAidClinic'}
-            onChange={handleReferralClinicChange}
+            onChange={(e) =>handleSelection(e)}
             id = "referral_clinic"
             required
           />
@@ -213,15 +321,16 @@ const generateFirstAidDates = () => {
         <label>
           <input
             type="radio"
+            name="referralClinic"
             value="other"
             checked={referralClinic === 'other'}
-            onChange={handleReferralClinicChange}
+            onChange={(e) =>handleSelection(e)}
             id = "referral_clinic"
             required
           />
           Other:
           {/* <input type="text" value={referralText} onChange={handleReferralTextChange} required/> */}
-          <input type="text" value={referralClinic} onChange={handleReferralClinicChange} required/>
+          <input type="text" value={referralClinic} onChange={(e) =>handleSelection(e)} required/>
         </label>
         <h6>יצרו איתך קשר על מנת לתאם תור למיון</h6>
       </div>
@@ -231,19 +340,19 @@ const generateFirstAidDates = () => {
   return (
     <div>
       <h2>Choose a Clinic:</h2>
-      <select value={clinic} onChange={handleClinicChange}>
+      <select value={formData.clinic} onChange={handleClinicChange}>
         <option value="">Select Clinic</option>
         <option value="sunday">Sunday Clinic</option>
         <option value="firstAid">First Aid Clinic</option>
         <option value="emergency">Emergency Clinic</option>
       </select>
-
+      <h1>{formData.clinic}</h1>
       {content}
 
-      {clinic && (
-        <button type="submit" onClick={sendMail}>
+      {formData.clinic && (
+        <button type="submit" onClick={handleSubmit}>
           Submit request
-        </button>
+        </button> 
       )}
     </div>
   );

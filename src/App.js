@@ -23,6 +23,10 @@ function App() {
     setIsLoggedIn(true);
   };
 
+  const isAuth = (value) => {
+    setIsLoggedIn(value) 
+  }
+
   const handleLogout = () => {
     // Perform logout logic
     setIsLoggedIn(false);
@@ -30,17 +34,18 @@ function App() {
 
   return (
     <div id="all">
-      <div className="App">
+      <div className="App" >
+        
         <BrowserRouter>
+        {isLoggedIn ? <NavBar/> : <></>}
           <Routes>
             <Route path="/" element={<Outlet />}>
-              <Route index element={<LogIn onLogin={handleLogin} />} />
+              <Route index element={isLoggedIn ? <></> : <LogIn onLogin={handleLogin} isAuth = {isAuth}/>} />
               <Route path="sign_in" element={<SignIn />} />
-              <Route path="navbar" element={isLoggedIn ? <NavBar onLogout={handleLogout} /> : <Navigate to="/login" />} />
               <Route path="apptDetails" element={<ApptDetails />} />
               <Route path="ticket_form" element={<TicketForm />} />
               <Route path="Clinic_Booking_page" element={<ClinicBookingPage />} />
-              <Route path="*" element={<LogIn onLogin={handleLogin} />} />
+              <Route path="*" element={isLoggedIn ? <></> : <LogIn onLogin={handleLogin} isAuth = {isAuth}/>} />
             </Route>
           </Routes>
         </BrowserRouter>

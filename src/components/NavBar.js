@@ -17,7 +17,7 @@ function Navbar() {
           </Link>
         </li>
         <li className="nav-item">
-          <Link to="/Cinic_Booking_page" className="nav-link">
+          <Link to="/Clinic_Booking_page" className="nav-link">
             Clinic Booking Page
           </Link>
         </li>
