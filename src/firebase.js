@@ -15,19 +15,18 @@ const firebaseConfig = {
   measurementId: "G-MZCFP5ZHC5"
 };
 
-export const logInWithEmailAndPassword = async (email, password, isAuth) => {
+export const app = initializeApp(firebaseConfig);
+// Get the Auth instance
+export const auth = getAuth(app);
+// Get the Firestore instance
+export const db = getFirestore(app);
+
+export const logInWithEmailAndPassword = async (email, password) => {
   try {
     await signInWithEmailAndPassword(auth, email, password);
-    isAuth(true);
     console.log("login succses!")
   } catch (err) {
     console.error(err);
     alert(err.message);
   }
 };
-
-export const app = initializeApp(firebaseConfig);
-// Get the Auth instance
-export const auth = getAuth(app);
-// Get the Firestore instance
-export const db = getFirestore(app);

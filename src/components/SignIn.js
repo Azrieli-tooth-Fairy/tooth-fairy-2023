@@ -9,9 +9,7 @@ import { auth, db } from '../firebase'; // Import the Auth and Firestore instanc
 
 function RegisterPage() {
   const [selectedRole, setSelectedRole] = useState("");
-  // const auth = props.auth;
-  // const db = props.db;
-  //=========================makeing some changes
+
   const [formData, setFormData] = useState({    
     full_name: "",
     phone_number: "",
@@ -39,17 +37,6 @@ const handleSubmit = async (e) => {
       await addDoc(usersCollectionRef, formData);
     // Reset the form fields
     console.log('user submitted successfully!');
-    // form.reset();
-    // setFormData({
-    //   full_name: "",
-    //   phone_number: "",
-    //   mail: "",
-    //   password: "",
-    //   school_year: "",
-    //   job_in_fairy: "",
-    //   isAdmin: "",
-    //   organization_Name: "",
-    // });
   } catch (error) {
     console.error('Error submitting user:', error);
   }
@@ -79,42 +66,41 @@ const handleSubmit = async (e) => {
 
   return (
     <div>
-      {/* alert("im here"); */}
-      <h1>Register form</h1>
-      <label htmlFor="role">Role:</label>
+      <h1>טופס רישום</h1>
+      <label htmlFor="role">:תפקיד</label>
       <select id="role" name="role" value={selectedRole} onChange={handleRoleChange}>
-        <option value="">Select a role</option>
-        <option value="job_owner">Job Owner</option>
-        <option value="student">Student</option>
-        <option value="doctor">Doctor</option>
-        <option value="social_worker">Social Worker</option>
+        <option value="">בחר תפקיד</option>
+        <option value="job_owner">בעל תפקידים</option>
+        <option value="student">סטודנט</option>
+        <option value="doctor">רופא</option>
+        <option value="social_worker">עובד סוציאלי</option>
       </select>
 
       {selectedRole === "job_owner" && (
   <form onSubmit={handleFormSubmit}>
     {/* Fields for job owners */}
-    <label htmlFor="full_name">Full name:</label>
+    <label htmlFor="full_name">שם מלא:</label>
     <input type="text" id="full_name" name="full_name" value={formData.full_name} onChange={handleInputChange} required/><br />
 
-    <label htmlFor="phone_number">Phone number:</label>
+    <label htmlFor="phone_number">:מספר פלאפון</label>
     <input type="number" id="phone_number" name="phone_number" value={formData.phone_number} onChange={handleInputChange}required/><br />
 
-    <label htmlFor="mail">Mail address:</label>
+    <label htmlFor="mail">:כתובת מייל</label>
     <input type="text" id="mail" name="mail" value={formData.mail} onChange={handleInputChange} required/><br />
 
-    <label htmlFor="password">Password:</label>
+    <label htmlFor="password">:סיסמא</label>
     <input type="password" id="password" name="password" value={formData.password} onChange={handleInputChange} required/><br />
 
-    <label htmlFor="school_year">School year:</label>
+    <label htmlFor="school_year">:שנת לימודים</label>
     <input type="text" id="school_year" name="school_year" value={formData.school_year} onChange={handleInputChange} required/><br />
 
-    <label htmlFor="job_in_fairy">Job in the Tooth Fairy:</label>
+    <label htmlFor="job_in_fairy">:תפקיד בפייה</label>
     <input type="text" id="job_in_fairy" name="job_in_fairy" value={formData.job_in_fairy} onChange={handleInputChange} required/><br />
 
     <label htmlFor="isAdmin">Is admin?</label>
     <input type="checkbox" id="isAdmin" name="isAdmin" value={formData.isAdmin} onChange={handleInputChange} required/><br />
 
-    <button type="submit">Submit</button>
+    <button type="submit">שלח</button>
   </form>
 )}
 
@@ -122,22 +108,22 @@ const handleSubmit = async (e) => {
 {selectedRole === "student" && (
   <form onSubmit={handleFormSubmit}>
     {/* Fields for students */}
-    <label htmlFor="full_name">Full name:</label>
+    <label htmlFor="full_name">:שם מלא</label>
     <input type="text" id="full_name" name="full_name" value={formData.full_name} onChange={handleInputChange} required/><br />
 
-    <label htmlFor="phone_number">Phone number:</label>
+    <label htmlFor="phone_number">:מספר פלאפון</label>
     <input type="text" id="phone_number" name="phone_number" value={formData.phone_number} onChange={handleInputChange} required/><br />
 
-    <label htmlFor="mail">Mail address:</label>
+    <label htmlFor="mail">:כתובת מייל</label>
     <input type="text" id="mail" name="mail" value={formData.mail} onChange={handleInputChange} required/><br />
 
-    <label htmlFor="password">Password:</label>
+    <label htmlFor="password">:סיסמא</label>
     <input type="password" id="password" name="password" value={formData.password} onChange={handleInputChange} required/><br />
 
-    <label htmlFor="school_year">School year:</label>
+    <label htmlFor="school_year">:שנת לימודים</label>
     <input type="text" id="school_year" name="school_year" value={formData.school_year} onChange={handleInputChange} required/><br />
 
-    <button type="submit">Submit</button>
+    <button type="submit">שלח</button>
   </form>
 )}
 
@@ -145,19 +131,19 @@ const handleSubmit = async (e) => {
 {selectedRole === "doctor" && (
   <form onSubmit={handleFormSubmit}>
     {/* Fields for doctors */}
-    <label htmlFor="full_name">Full name:</label>
+    <label htmlFor="full_name">:שם מלא</label>
     <input type="text" id="full_name" name="full_name" value={formData.full_name} onChange={handleInputChange} required/><br />
 
-    <label htmlFor="phone_number">Phone number:</label>
+    <label htmlFor="phone_number">:מספר פלאפון</label>
     <input type="text" id="phone_number" name="phone_number" value={formData.phone_number} onChange={handleInputChange} required/><br />
 
-    <label htmlFor="mail_address">Mail address:</label>
+    <label htmlFor="mail_address">:כתובת מייל</label>
     <input type="text" id="mail" name="mail" value={formData.mail} onChange={handleInputChange} required/><br />
 
-    <label htmlFor="password">Password:</label>
+    <label htmlFor="password">:סיסמא</label>
     <input type="password" id="password" name="password" value={formData.password} onChange={handleInputChange} required/><br />
 
-    <button type="submit">Submit</button>
+    <button type="submit">שלח</button>
   </form>
 )}
 
@@ -165,22 +151,22 @@ const handleSubmit = async (e) => {
 {selectedRole === "social_worker" && (
   <form onSubmit={handleFormSubmit}>
     {/* Fields for social workers */}
-    <label htmlFor="full_name">Full name:</label>
+    <label htmlFor="full_name">:שם מלא</label>
     <input type="text" id="full_name" name="full_name" value={formData.full_name} onChange={handleInputChange} required/><br />
 
-    <label htmlFor="phone_number">Phone number:</label>
+    <label htmlFor="phone_number">:מספר פלאפון</label>
     <input type="text" id="phone_number" name="phone_number" value={formData.phone_number} onChange={handleInputChange} required/><br />
 
-    <label htmlFor="mail_address">Mail address:</label>
+    <label htmlFor="mail_address">:כתובת מייל</label>
     <input type="text" id="mail" name="mail" value={formData.mail} onChange={handleInputChange} required/><br />
 
-    <label htmlFor="password">Password:</label>
+    <label htmlFor="password">:סיסמא</label>
     <input type="password" id="password" name="password" value={formData.password} onChange={handleInputChange} required/><br />
 
-    <label htmlFor="organization_Name">Organization Name:</label>
+    <label htmlFor="organization_Name">:שם עמותה</label>
     <input type="text" id="organization_Name" name="organization_Name" value={formData.organization_Name} onChange={handleInputChange} required/><br />
 
-    <button type="submit">Submit</button>
+    <button type="submit">שלח</button>
   </form>
 )}
 

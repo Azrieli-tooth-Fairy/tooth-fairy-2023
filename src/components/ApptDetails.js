@@ -1,6 +1,6 @@
 function ApptDetails(){
     return (<div>
-        appt deats
+        פרטי תורים
             </div>)
 } 
 export default ApptDetails;

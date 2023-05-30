@@ -1,5 +1,5 @@
 import React, { useState , useEffect } from 'react';
-import { setDoc, doc, collection, addDoc , getFirestore , onSnapshot, query } from 'firebase/firestore';
+import { setDoc, doc, getDocs , collection, addDoc , getFirestore , onSnapshot, query } from 'firebase/firestore';
 import {app, auth, db } from '../firebase'; // Import the Auth and Firestore instances from firebase.js
 import emailjs from 'emailjs-com';
 
@@ -89,7 +89,7 @@ const generateFirstAidDates = () => {
 
 }
 // here we need to send mail to admin that the user sign in to firstAid clinic
-  const sendMailFirstAid = (e) => {
+  const sendMailFirstAid = (e) => { // need to update parameters list according to requeirements
     e.preventDefault();
 
     var id = document.getElementById("idCard").value;
@@ -99,7 +99,7 @@ const generateFirstAidDates = () => {
     var referral_reason = document.getElementById("referral_reason").value;
 
     const serviceID = "toothFariyAdmin";
-    const templateID = ""; // need to create new tamplate for first aid
+    const templateID = "template_jhtva3r"; // todo - need to create new tamplate for first aid
     var params = {
         id: id,
         social_worker_name: social_worker_name,
@@ -122,6 +122,7 @@ const [formData, setFormData] = useState({
   clinic: "",
   reason: "",
   referralClinic: ""
+
 });
 //stopped here 22-05=> started to work on checking if there are avilble time on the db!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 const streamFormState = (snapshot, error) => {
@@ -130,42 +131,89 @@ const streamFormState = (snapshot, error) => {
   return onSnapshot(itemsQuery, snapshot, error);
 };
 
-const [formState, setFormState] = useState({ //testing!
-  // apptAmount: [{date: "2023-05-28", queue: "14:00", count: 3},
-  //             {date: "2023-05-28", queue: "15:00", count: 4}]
-});
-  useEffect(() => {
-    const unsubscribe = streamState(
-        (querySnapshot) => {
-            const updatedState = 
-            querySnapshot.docs.map(docSnapshot => docSnapshot.data());
-            setFormState(updatedState);
-        },
-        (error) => setError('grocery-list-item-get-fail')
-    );
-    return unsubscribe;
-  }, [, setProducts]);
+// const [formState, setFormState] = useState({apptAmount:[]});
+//   useEffect(() => {
+//     const unsubscribe = streamFormState(
+//         (snapshot) => {
+//           const aggregatedData = [];
 
-const updateCount = (date, queue) => {
-  const updatedApptAmount = formState.apptAmount.map((item) => {
-    if (item.date === date && item.queue === queue) {
-      console.log(item.count)
-      return { ...item, count: item.count+1 };
-    }
-    return item;
+//           snapshot.forEach((doc) => {
+//             const data = doc.data();
+//             const date = data.date;
+//             const time = data.queue;
+        
+//             // Check if an entry already exists for the date and time
+//             const existingEntryIndex = aggregatedData.findIndex(
+//               (entry) => entry.date === date && entry.time === time
+//             );
+        
+//             if (existingEntryIndex !== -1) {
+//               // If entry exists, increment the count
+//               aggregatedData[existingEntryIndex].count++;
+//             } else {
+//               // If entry doesn't exist, create a new entry
+//               aggregatedData.push({ "date": date, "queue": time, count: 1 });
+//             }
+//           });          return {apptAmount: aggregatedData};
+//         });
+//     return unsubscribe;
+//   }, [, setFormState]);
+
+const [formState, setFormState] = useState({ apptAmount: [] });
+
+useEffect(() => {
+  const unsubscribe = streamFormState((snapshot) => {
+    const aggregatedData = [...formState.apptAmount]; // Create a copy of the current apptAmount array
+
+    snapshot.forEach((doc) => {
+      const data = doc.data();
+      const date = data.date;
+      const time = data.queue;
+
+      // Check if an entry already exists for the date and time
+      const existingEntryIndex = aggregatedData.findIndex(
+        (entry) => entry.date === date && entry.queue === time
+      );
+
+      if (existingEntryIndex !== -1) {
+        // If entry exists, increment the count
+        aggregatedData[existingEntryIndex].count++;
+      } else {
+        // If entry doesn't exist, create a new entry
+        aggregatedData.push({ date: date, queue: time, count: 1 });
+      }
+    });
+
+    setFormState({ apptAmount: aggregatedData }); // Update the formState with the updated apptAmount
+
+    return () => {
+      // Cleanup function
+      setFormState({ apptAmount: [] }); // Reset the formState when unsubscribing
+    };
   });
 
-  setFormState((prevState) => ({
-    ...prevState,
-    apptAmount: updatedApptAmount
-  }));
-};
+  return unsubscribe;
+}, [setFormState]);
 
+
+const updateCount = (date, queue) => {};
+
+
+// const updateFormState = (updatedApptAmount) => {
+//   setFormState((prevState) => ({
+//     ...prevState,
+//     apptAmount: updatedApptAmount
+//   }));
+// };
 const getCount = (date, queue) => {
-  return formState.apptAmount.find(
-    (item) => item.date === date && item.queue === queue
-  ).count;
-};
+  if (!date || !queue) return 0 ;
+  let apptData = formState.apptAmount.find(
+    (item) => item.date === date && item.queue === queue) ;
+    if  (apptData)
+      return apptData.count ;
+  else 
+    return 0 ;
+  };
  
 const handleInputChange = (event) => {
   const { id, value } = event.target;
@@ -200,15 +248,15 @@ const handleSubmit = async (e) => {
     const sundayDates = generateSundayDates();
     content = (
       <div>
-        <label htmlFor="idCard">ID Number:</label>
+        <label htmlFor="idCard">:מספר תעודת זהות</label>
         <input type="number" id="idCard" 
           value={formData.idCard}
           onChange={handleInputChange}   
           required/>
 
-        <h4>Select a Sunday date:</h4>
+        <h4>:בחר תאריך</h4>
         <select name = "date" value={formData.date} onChange={(e) => handleSelection(e)}>
-        <option value="">Available dates:</option>
+        <option value="">ימי ראשון זמינים</option>
         {sundayDates.map((date) => (
           <option key={date} value={date}>
             {date}
@@ -219,7 +267,7 @@ const handleSubmit = async (e) => {
         {formData.date && ( //if we have date so show the houres
           <div>
             {/* here we need to connect with the firebase so we could tell when there is avilble appointment */}
-            <h4>Select a queue time:</h4>
+            <h4>בחר שעה</h4>
             <select
               name="queue"
               value={formData.queue}
@@ -228,16 +276,17 @@ const handleSubmit = async (e) => {
                 updateCount(formData.date, e.target.value);
               }}
             >
-              <option value="">Select a queue time:</option>
+              <option value="">שעות פנויות</option>
               <option
                 value="14:00"
-                disabled={getCount(formData.date, "14:00") >= 4}
+                disabled={getCount(formData.date, "14:00") >= 4 ? true : false}
               >
+
                 14:00
               </option>
               <option
                 value="15:00"
-                disabled={getCount(formData.date, "15:00") >= 4}
+                disabled={getCount(formData.date, "15:00") >= 4 ? true : false}
               >
                 15:00
               </option>
@@ -248,9 +297,9 @@ const handleSubmit = async (e) => {
 
         {formData.queue && (
           <div>
-            <h3>Selected Queue:</h3>
-            <p>Date: {formData.date}</p>
-            <p>Time: {formData.queue}</p>
+            <h3>התור שנבחר</h3>
+            <p>:תאריך {formData.date}</p>
+            <p>:שעה {formData.queue}</p>
           </div>
         )}
       </div>
@@ -259,10 +308,10 @@ const handleSubmit = async (e) => {
     const firstAidDates = generateFirstAidDates();
     content = (
       <div>
-        <label htmlFor="idCard">ID Card:</label>
+        <label htmlFor="idCard">:מספר תעודת זהות</label>
         <input type="number" id="idCard" required/>
 
-        <h4>Select a date for first aid:</h4>
+        <h4>:בחר תאריך</h4>
         {firstAidDates.map((date) => (
           <button name="date" key={date} onClick={(e) => handleSelection(e)}>
             {date}
@@ -271,9 +320,9 @@ const handleSubmit = async (e) => {
 
         {selectedDate && (
           <div>
-            <h3>Selected Date for First Aid:</h3>
-            <p>Date: {selectedDate}</p>
-            <p>Time: 8:30</p>
+            <h3>התור שנבחר</h3>
+            <p>:תאריך {selectedDate}</p>
+            <p>שעה: 8:30</p>
           </div>
         )}
       </div>
@@ -281,19 +330,22 @@ const handleSubmit = async (e) => {
   } else if (formData.clinic === 'emergency') {
     content = (
       <div>
-        <label htmlFor="idCard">ID:</label>
+        <label htmlFor="idCard">:מספר תעודת זהות</label>
         <input type="number" id="idCard" required/>
 
-        <label htmlFor="social_worker_name">Social worker name:</label>
+        <label htmlFor="social_worker_name">:שם עובד סוציאלי</label>
         <input type="text" id="social_worker_name" required/>
 
-        <label htmlFor="social_worker_number">Social worker number:</label>
+        <label htmlFor="social_worker_number">:מס' פלאפון של עובד סוציאלי</label>
         <input type="number" id="social_worker_number" required/>
 
-        <h4>Reason for Referral:</h4>
+        <label htmlFor="social_worker_mail">:מייל של עובד סוציאלי</label>
+        <input type="mail" id="social_worker_mail" required/>
+
+        <h4>:סיבת הפנייה</h4>
         <textarea name='reason' value={formData.reason} id = "referral_reason" onChange={(e) => handleSelection(e)} required/>
 
-        <h4>Referral Clinic:</h4>
+        <h4>:מרפאה מפנה</h4>
         <label>
           <input
             type="radio"
@@ -304,7 +356,7 @@ const handleSubmit = async (e) => {
             id = "referral_clinic"
             required
           />
-          Sunday Clinic
+          מרפאת יום א
         </label>
         <label>
           <input
@@ -316,7 +368,7 @@ const handleSubmit = async (e) => {
             id = "referral_clinic"
             required
           />
-          First Aid Clinic
+          מרפאת עזרה ראשונה
         </label>
         <label>
           <input
@@ -328,7 +380,7 @@ const handleSubmit = async (e) => {
             id = "referral_clinic"
             required
           />
-          Other:
+          :אחר
           {/* <input type="text" value={referralText} onChange={handleReferralTextChange} required/> */}
           <input type="text" value={referralClinic} onChange={(e) =>handleSelection(e)} required/>
         </label>
@@ -339,19 +391,19 @@ const handleSubmit = async (e) => {
 
   return (
     <div>
-      <h2>Choose a Clinic:</h2>
+      <h2>קביעת תור למרפאה</h2>
       <select value={formData.clinic} onChange={handleClinicChange}>
-        <option value="">Select Clinic</option>
-        <option value="sunday">Sunday Clinic</option>
-        <option value="firstAid">First Aid Clinic</option>
-        <option value="emergency">Emergency Clinic</option>
+        <option value="">אנא בחר מרפאה</option>
+        <option value="sunday">מרפאת יום א</option>
+        <option value="firstAid">מרפאת עזרה ראשונה</option>
+        <option value="emergency">מרפאת מיון</option>
       </select>
       <h1>{formData.clinic}</h1>
       {content}
 
       {formData.clinic && (
         <button type="submit" onClick={handleSubmit}>
-          Submit request
+          שלח בקשה
         </button> 
       )}
     </div>

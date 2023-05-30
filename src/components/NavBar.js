@@ -8,27 +8,42 @@ function Navbar() {
       <ul className="navbar-nav">
         <li className="nav-item">
           <Link to="/" className="nav-link">
-            Home
+            {/* Home */}
           </Link>
         </li>
         <li className="nav-item">
           <Link to="/sign_in" className="nav-link">
-            Sign In
+            רישום משתמש חדש
           </Link>
         </li>
         <li className="nav-item">
           <Link to="/Clinic_Booking_page" className="nav-link">
-            Clinic Booking Page
+          קביעת תור למרפאות
           </Link>
         </li>
         <li className="nav-item">
-          <Link to="/apptDetails" className="nav-link">
-            Appointment Details
+          <Link to="/emergence_appt" className="nav-link">
+          קביעת תור למיון
           </Link>
         </li>
         <li className="nav-item">
           <Link to="/ticket_form" className="nav-link">
-            Ticket Form
+            יצירת כרטיס למטופל
+          </Link>
+        </li>
+        <li className="nav-item">
+          <Link to="/apptList" className="nav-link">
+            פרטי תורים
+          </Link>
+        </li>
+        <li className="nav-item">
+          <Link to="/list_of_patient" className="nav-link">
+          רשימת המטופלים
+          </Link>
+        </li>
+        <li className="nav-item">
+          <Link to="/cancel_appointment" className="nav-link">
+          ביטול תור
           </Link>
         </li>
       </ul>

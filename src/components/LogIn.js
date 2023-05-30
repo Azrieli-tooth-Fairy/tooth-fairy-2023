@@ -1,19 +1,30 @@
 import React, { useState } from 'react';
-import { logInWithEmailAndPassword } from '../firebase.js';
+import { logInWithEmailAndPassword , db, getDoc} from '../firebase.js';
+import { collection, getDocs, query, where} from 'firebase/firestore';
 
 function LogIn(props) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   
-  const setLogin = props.isAuth;
+  const setUserId = props.setUserId ;
 
-  const handleLogin = (e) => {
+  const getUserIdRole = async () => {
+    const coll = collection(db, "users");
+    const q = query(coll, where("mail", "==", email));
+    const querySnapshot = await getDocs(q);
+    const doc = querySnapshot.docs[0];
+    //const data = doc.data();
+    //return { id: doc.id, role: data.role };
+    return { "id" : "daniely12391@gmail.com", "role": "job owner"}
+  };
+  
+
+  const handleLogin = async  (e) => {
     e.preventDefault();
     try{
-      logInWithEmailAndPassword(email, password, setLogin);
-      // setLogin(true);
-      // onLogin(); // Call the onLogin callback to update the login status in the parent component
-      // console.log('Login success');
+      logInWithEmailAndPassword(email, password);
+      const idRole = await getUserIdRole(email) ;
+      setUserId(idRole)
     }catch (error) {
       alert(error.message);
       console.error('Error submitting user:', error);

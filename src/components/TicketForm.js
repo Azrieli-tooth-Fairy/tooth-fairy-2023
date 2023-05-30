@@ -13,7 +13,8 @@ const TicketForm = () => {
         phoneNumber: "",
         entryPermit: false,
         comments: "",
-        verified: false
+        verified: false,
+        status: ""
     });
 
     const handleInputChange = (event) => {
@@ -39,10 +40,10 @@ const TicketForm = () => {
 
   return (
     <div>
-      <h2>Open a Ticket</h2>
+      <h2>פתיחת כרטיס למטופל</h2>
       <form onSubmit={handleSubmit}>
         <div>
-          <label htmlFor="fullName">Full Name:</label>
+          <label htmlFor="fullName">:שם מלא</label>
           <input
             type="text"
             id="fullName"
@@ -52,7 +53,7 @@ const TicketForm = () => {
           />
         </div>
         <div>
-          <label htmlFor="idCard">ID Card/Passport:</label>
+          <label htmlFor="idCard">:מספר תז או דרכון</label>
           <input
             type="text"
             id="idCard"
@@ -62,21 +63,21 @@ const TicketForm = () => {
           />
         </div>
         <div>
-          <label htmlFor="gender">Gender:</label>
+          <label htmlFor="gender">מגדר</label>
           <select
             id="gender"
             value={formData.gender}
             onChange={handleInputChange}
             required
           >
-            <option value="">Select Gender</option>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-            <option value="other">Other</option>
+            <option value="">בחירת מגדר</option>
+            <option value="male">זכר</option>
+            <option value="female">נקבה</option>
+            <option value="other">אחר</option>
           </select>
         </div>
         <div>
-          <label htmlFor="organization">Name of Association/Organization:</label>
+          <label htmlFor="organization">:שם עמותה</label>
           <input
             type="text"
             id="organization"
@@ -86,7 +87,7 @@ const TicketForm = () => {
           />
         </div>
         <div>
-          <label htmlFor="socialWorker">Name of Social Worker:</label>
+          <label htmlFor="socialWorker">:שם עובד סוציאלי</label>
           <input
             type="text"
             id="socialWorker"
@@ -96,7 +97,7 @@ const TicketForm = () => {
           />
         </div>
         <div>
-          <label htmlFor="phoneNumber">Social Worker's Cell Phone Number:</label>
+          <label htmlFor="phoneNumber">:מספר פלאפון של העובד סוציאלי</label>
           <input
             type="text"
             id="phoneNumber"
@@ -106,7 +107,7 @@ const TicketForm = () => {
           />
         </div>
         <div>
-          <label htmlFor="entryPermit">Is an Entry Permit Necessary?</label>
+          <label htmlFor="entryPermit">?צריך אישור כניסה</label>
           <select
             id="entryPermit"
             name="entryPermit"
@@ -114,12 +115,12 @@ const TicketForm = () => {
             onChange={handleInputChange}
             required
             >
-            <option value="no">No</option>
-            <option value="yes">Yes</option>
+            <option value="no">לא</option>
+            <option value="yes">כן</option>
             </select>
             </div>
         <div>
-          <label htmlFor="comments">Comments:</label>
+          <label htmlFor="comments">:הערות נוספות</label>
           <textarea
             id="comments"
             value={formData.comments}
@@ -138,10 +139,10 @@ const TicketForm = () => {
               onChange={handleInputChange}
               required
             />
-            I confirm that the details provided are accurate.
+            .אני מאשר שכל המידע שמסרתי מדוייק
           </label>
         </div>
-        <button type="submit">Submit</button>
+        <button type="submit">שלח</button>
       </form>
     </div>
   );

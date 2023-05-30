@@ -1,71 +1,71 @@
-// import React, { useState, useEffect } from 'react';
-// import firebase from 'firebase/app';
-// import 'firebase/firestore';
+import React, { useEffect, useState } from 'react';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '../firebase';
+import './ApptList.css';
 
-// const ApptList = () => {
-//   const [appointments, setAppointments] = useState([]);
+const AppointmentsTable = () => {
+  const [appointments, setAppointments] = useState([]);
 
-//   useEffect(() => {
-//     // Fetch scheduled appointments from Firebase Firestore
-//     const fetchAppointments = async () => {
-//       const firestore = firebase.firestore();
+  useEffect(() => {
+    // Fetch the appointment data from Firestore collection
+    const fetchAppointments = async () => {
+      try {
+        const appointmentsColRef = collection(db, 'appointments');
+        const querySnapshot = await getDocs(appointmentsColRef);
+        const appointmentsData = querySnapshot.docs.map((doc) => doc.data());
+        setAppointments(appointmentsData);
+      } catch (error) {
+        console.log('Error fetching appointments:', error);
+      }
+    };
 
-//       try {
-//         const appointmentsCollection = firestore.collection('appointments');
-//         const snapshot = await appointmentsCollection.get();
+    fetchAppointments();
+  }, []);
 
-//         const appointmentsData = snapshot.docs.map((doc) => {
-//           const { clientName, clientId, clinicType, appointmentTime, appointmentDate } = doc.data();
-//           return {
-//             id: doc.id,
-//             clientName,
-//             clientId,
-//             clinicType,
-//             appointmentTime,
-//             appointmentDate,
-//           };
-//         });
+  // Function to check if a date is in the future
+  const isFutureDate = (dateString) => {
+    const today = new Date();
+    const appointmentDate = new Date(dateString);
+    return appointmentDate > today;
+  };
 
-//         setAppointments(appointmentsData);
-//       } catch (error) {
-//         console.error('Error fetching appointments:', error);
-//       }
-//     };
+  return (
+    <div>
+      <h2>Appointments</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Date</th>
+            <th>Clinic</th>
+            <th>Queue</th>
+            <th>Reason</th>
+            <th>Referral Clinic</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {appointments.map((appointment, index) => {
+            if (isFutureDate(appointment.date)) {
+              return (
+                <tr key={index}>
+                  <td>{appointment.idCard}</td>
+                  <td>{appointment.date}</td>
+                  <td>{appointment.clinic}</td>
+                  <td>{appointment.queue}</td>
+                  <td>{appointment.reason}</td>
+                  <td>{appointment.referralClinic}</td>
+                  <td>{appointment.status}</td>
+                </tr>
+              );
+            } else {
+              return null; // Skip displaying the appointment if the date has passed
+            }
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
+};
 
-//     fetchAppointments();
-//   }, []);
-
-//   return (
-//     <div>
-//       <h2>Scheduled Appointments</h2>
-//       {appointments.length === 0 ? (
-//         <p>No appointments scheduled.</p>
-//       ) : (
-//         <table>
-//           <thead>
-//             <tr>
-//               <th>Client Name</th>
-//               <th>Client ID</th>
-//               <th>Clinic Type</th>
-//               <th>Appointment Time</th>
-//               <th>Appointment Date</th>
-//             </tr>
-//           </thead>
-//           <tbody>
-//             {appointments.map((appointment) => (
-//               <tr key={appointment.id}>
-//                 <td>{appointment.clientName}</td>
-//                 <td>{appointment.clientId}</td>
-//                 <td>{appointment.clinicType}</td>
-//                 <td>{appointment.appointmentTime}</td>
-//                 <td>{appointment.appointmentDate}</td>
-//               </tr>
-//             ))}
-//           </tbody>
-//         </table>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default ApptList;
+export default AppointmentsTable;

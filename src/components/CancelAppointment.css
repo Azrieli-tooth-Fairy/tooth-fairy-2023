@@ -1,0 +1,31 @@
+.appointment-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  .appointment-table th,
+  .appointment-table td {
+    border: 1px solid #ccc;
+    padding: 8px;
+  }
+  
+  .appointment-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+    text-align: left;
+  }
+  
+  .appointment-table button {
+    background-color: #f44336;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .appointment-table button:hover {
+    background-color: #d32f2f;
+  }
+  

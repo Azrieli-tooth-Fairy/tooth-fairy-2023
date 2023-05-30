@@ -1,5 +1,45 @@
-body {
+/* body {
     background-image: url('header-background.jpg');
     background-repeat: no-repeat;
     background-size: cover;
-  }
+  } */
+  /* Add CSS styling to the PatientList component */
+
+/* apptList.css */
+
+/* ApptList.css */
+
+.AppointmentsTable {
+  margin: 20px;
+}
+
+.AppointmentsTable h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.AppointmentsTable table {
+  width: 100%;
+  border-collapse: collapse;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.AppointmentsTable th,
+.AppointmentsTable td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.AppointmentsTable th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+.AppointmentsTable tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.AppointmentsTable tbody tr:hover {
+  background-color: #ebebeb;
+}

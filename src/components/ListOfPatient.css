@@ -1,0 +1,34 @@
+/* Add CSS styling to the PatientList component */
+
+.PatientList {
+    margin: 20px;
+  }
+  
+  .PatientList h2 {
+    margin-bottom: 10px;
+  }
+  
+  .PatientList table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .PatientList th,
+  .PatientList td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .PatientList th {
+    background-color: #f2f2f2;
+  }
+  
+  .PatientList tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  .PatientList tbody tr:hover {
+    background-color: #ebebeb;
+  }
+  
