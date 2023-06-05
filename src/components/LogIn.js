@@ -13,9 +13,10 @@ function LogIn(props) {
     const q = query(coll, where("mail", "==", email));
     const querySnapshot = await getDocs(q);
     const doc = querySnapshot.docs[0];
-    //const data = doc.data();
-    //return { id: doc.id, role: data.role };
-    return { "id" : "daniely12391@gmail.com", "role": "job owner"}
+    const data = doc.data();
+    // alert(doc.data() + " get user id role\n")
+    return { id: doc.id, role: data.role };
+    // return { "id" : "daniely12391@gmail.com", "role": "job owner"}
   };
   
 

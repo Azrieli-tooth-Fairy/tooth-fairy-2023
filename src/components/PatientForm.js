@@ -1,13 +1,9 @@
 import React, { useState } from 'react';
 import { setDoc, doc, collection, addDoc , getFirestore } from 'firebase/firestore';
 import {app, auth, db } from '../firebase'; // Import the Auth and Firestore instances from firebase.js
-import './TicketForm.css'
-//רשימת הבקשות לתור - העובד הסוציאלי
-// שלב מעבר מקביעת התור עד שהתור הופך לפגישה
-// Ticket -> appoitment! needs to fix functunality
-// לאחר שהTICKET נעלם הוא לא משנה כלום 
+import './PatientForm.css'
 
-const TicketForm = () => {
+const PatientForm = () => {
     const [formData, setFormData] = useState({
         fullName: "",
         idCard: "",
@@ -31,14 +27,14 @@ const TicketForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Create a new document in the "tickets" collection with the form data
+    // Create a new document in the "patients" collection with the form data
     try {
-        const ticketsCollectionRef = collection(db, 'tickets');
-        await addDoc(ticketsCollectionRef, formData);
+        const patientsCollectionRef = collection(db, 'patients');
+        await addDoc(patientsCollectionRef, formData);
       // Reset the form fields
-      console.log('Ticket submitted successfully!');
+      console.log('Patient submitted successfully!');
     } catch (error) {
-      console.error('Error submitting ticket:', error);
+      console.error('Error submitting patient:', error);
     }
   };
 
@@ -152,7 +148,4 @@ const TicketForm = () => {
   );
 };
 
-export default TicketForm;
-
-{/* <button onClick={() => handleQueueSelection('14:00')}>14:00</button>
-<button onClick={() => handleQueueSelection('15:00')}>15:00</button> */}
+export default PatientForm;

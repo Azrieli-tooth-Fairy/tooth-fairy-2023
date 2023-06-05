@@ -1,5 +1,5 @@
 import React, { useState , useEffect } from 'react';
-import { setDoc, doc, getDocs , collection, addDoc , getFirestore , onSnapshot, query } from 'firebase/firestore';
+import { setDoc, doc, getDocs , collection, addDoc , getFirestore , onSnapshot, query , where} from 'firebase/firestore';
 import {app, auth, db } from '../firebase'; // Import the Auth and Firestore instances from firebase.js
 import emailjs from 'emailjs-com';
 
@@ -124,44 +124,33 @@ const [formData, setFormData] = useState({
   referralClinic: ""
 
 });
-//stopped here 22-05=> started to work on checking if there are avilble time on the db!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 const streamFormState = (snapshot, error) => {
   const itemsColRef = collection(db, 'appointments')
   const itemsQuery = query(itemsColRef)
   return onSnapshot(itemsQuery, snapshot, error);
 };
+//here were going to hendal the possebility of cancel sunday.
+const [cancelDates, setCancelDates] = useState([]);
 
-// const [formState, setFormState] = useState({apptAmount:[]});
-//   useEffect(() => {
-//     const unsubscribe = streamFormState(
-//         (snapshot) => {
-//           const aggregatedData = [];
+useEffect(() => {
+  const fetchCancelDates = async () => {
+    try {
+      const cancelClinicCollectionRef = collection(db, 'cancelSundayClinic2');
+      const cancelDatesSnapshot = await getDocs(cancelClinicCollectionRef);
+      const cancelDatesData = cancelDatesSnapshot.docs.map((doc) => doc.data().date);
+      setCancelDates(cancelDatesData);
+    } catch (error) {
+      console.log('Error fetching cancel clinic dates:', error);
+    }
+  };
 
-//           snapshot.forEach((doc) => {
-//             const data = doc.data();
-//             const date = data.date;
-//             const time = data.queue;
-        
-//             // Check if an entry already exists for the date and time
-//             const existingEntryIndex = aggregatedData.findIndex(
-//               (entry) => entry.date === date && entry.time === time
-//             );
-        
-//             if (existingEntryIndex !== -1) {
-//               // If entry exists, increment the count
-//               aggregatedData[existingEntryIndex].count++;
-//             } else {
-//               // If entry doesn't exist, create a new entry
-//               aggregatedData.push({ "date": date, "queue": time, count: 1 });
-//             }
-//           });          return {apptAmount: aggregatedData};
-//         });
-//     return unsubscribe;
-//   }, [, setFormState]);
+  fetchCancelDates();
+}, []);
 
 const [formState, setFormState] = useState({ apptAmount: [] });
 
-useEffect(() => {
+useEffect(() => { //this useEffect is for the sunday clinic, to check if there are already 4 patient in each time.
   const unsubscribe = streamFormState((snapshot) => {
     const aggregatedData = [...formState.apptAmount]; // Create a copy of the current apptAmount array
 
@@ -198,13 +187,6 @@ useEffect(() => {
 
 const updateCount = (date, queue) => {};
 
-
-// const updateFormState = (updatedApptAmount) => {
-//   setFormState((prevState) => ({
-//     ...prevState,
-//     apptAmount: updatedApptAmount
-//   }));
-// };
 const getCount = (date, queue) => {
   if (!date || !queue) return 0 ;
   let apptData = formState.apptAmount.find(
@@ -214,6 +196,8 @@ const getCount = (date, queue) => {
   else 
     return 0 ;
   };
+  //actualy, all this 50 rows of code hendel the same thing in the sunday clinic.
+
  
 const handleInputChange = (event) => {
   const { id, value } = event.target;
@@ -241,7 +225,7 @@ const handleSubmit = async (e) => {
     console.error('Error submitting ticket:', error);
   }
 };
-//-------------------------------------------------EMAILJS
+
   let content = null;
 
   if (formData.clinic === 'sunday') {
@@ -255,13 +239,16 @@ const handleSubmit = async (e) => {
           required/>
 
         <h4>:בחר תאריך</h4>
-        <select name = "date" value={formData.date} onChange={(e) => handleSelection(e)}>
-        <option value="">ימי ראשון זמינים</option>
-        {sundayDates.map((date) => (
-          <option key={date} value={date}>
-            {date}
-          </option>
-        ))}
+        <select name="date" value={formData.date} onChange={(e) => handleSelection(e)}>
+          <option value="">ימי ראשון זמינים</option>
+          {sundayDates.map((date) => {
+            const isDisabled = cancelDates.includes(date);
+            return (
+              <option key={date} value={date} disabled={isDisabled}>
+                {date}
+              </option>
+            );
+          })}
         </select>
 
         {formData.date && ( //if we have date so show the houres

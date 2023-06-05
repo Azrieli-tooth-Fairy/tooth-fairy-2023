@@ -1,34 +1,55 @@
-/* Add CSS styling to the PatientList component */
+/* ListOfPatient.css */
 
 .PatientList {
-    margin: 20px;
-  }
-  
-  .PatientList h2 {
-    margin-bottom: 10px;
-  }
-  
-  .PatientList table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
-  .PatientList th,
-  .PatientList td {
-    padding: 10px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-  }
-  
-  .PatientList th {
-    background-color: #f2f2f2;
-  }
-  
-  .PatientList tbody tr:nth-child(even) {
-    background-color: #f9f9f9;
-  }
-  
-  .PatientList tbody tr:hover {
-    background-color: #ebebeb;
-  }
-  
+  margin: 20px;
+}
+
+.PatientList h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.search-bar input {
+  width: 200px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-right: 10px;
+}
+
+.PatientList table {
+  width: 100%;
+  border-collapse: collapse;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.PatientList th,
+.PatientList td {
+  padding: 12px;
+  border-bottom: 1px solid #ccc;
+  text-align: left;
+}
+
+.PatientList th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+.PatientList tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.PatientList tbody tr:hover {
+  background-color: #f5f5f5;
+}
+
+.PatientList p {
+  font-style: italic;
+  margin-top: 10px;
+}
