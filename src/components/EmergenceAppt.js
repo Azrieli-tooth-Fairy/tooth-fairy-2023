@@ -1,14 +1,8 @@
-  import React, { useState , useEffect } from 'react';
-  import { setDoc, doc, getDocs , collection, addDoc , getFirestore , onSnapshot, query } from 'firebase/firestore';
-  import {app, auth, db } from '../firebase'; // Import the Auth and Firestore instances from firebase.js
-  import emailjs from 'emailjs-com';
+  import React, { useState } from 'react';
+  import { collection, addDoc } from 'firebase/firestore';
+  import { db } from '../firebase'; // Import the Auth and Firestore instances from firebase.js
 
   const ClinicBookingPage = () => {
-    const [selectedQueue, setSelectedQueue] = useState('');
-    const [selectedDate, setSelectedDate] = useState('');
-    const [reason, setReason] = useState('');
-    const [referralClinic, setReferralClinic] = useState('');
-    const [referralText, setReferralText] = useState('');
 
     function handleSelection(event) {
       setFormData({ ...formData, [event.target.name]: event.target.value });

@@ -28,3 +28,23 @@
     color:#ffdc00;
   }
   
+  .navgrid-header {
+    color: #fff;
+    background-color: #44494f;
+    padding: 2.5px 15px;
+    border-bottom: solid 2px #c8ceae;
+  }
+  
+  .navgrid-wrapper {
+    margin: 10px 10px 10px 10px
+  }
+  .navgrid-container {
+    margin: 10px 0 0 0;
+    min-height: 400px;
+    max-height: 800px;
+    min-width: 1200px;
+    max-width: 800px;
+    overflow: auto;
+    display: grid;
+    grid-template-columns: auto auto auto;
+  }

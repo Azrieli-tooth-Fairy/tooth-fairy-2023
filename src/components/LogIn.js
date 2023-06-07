@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { logInWithEmailAndPassword , db, getDoc} from '../firebase.js';
+import { logInWithEmailAndPassword , db } from '../firebase.js';
 import { collection, getDocs, query, where} from 'firebase/firestore';
 
 function LogIn(props) {
@@ -14,22 +14,23 @@ function LogIn(props) {
     const querySnapshot = await getDocs(q);
     const doc = querySnapshot.docs[0];
     const data = doc.data();
-    // alert(doc.data() + " get user id role\n")
     return { id: doc.id, role: data.role };
-    // return { "id" : "daniely12391@gmail.com", "role": "job owner"}
   };
   
 
   const handleLogin = async  (e) => {
     e.preventDefault();
     try{
-      logInWithEmailAndPassword(email, password);
-      const idRole = await getUserIdRole(email) ;
-      setUserId(idRole)
+      const value = await logInWithEmailAndPassword(email, password);
+      if(value) 
+        {
+          const idRole = await getUserIdRole(email) ;
+        setUserId(idRole);}
     }catch (error) {
       alert(error.message);
       console.error('Error submitting user:', error);
     }
+    
   };
 
   return (

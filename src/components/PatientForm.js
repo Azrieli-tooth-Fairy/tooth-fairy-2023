@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { setDoc, doc, collection, addDoc , getFirestore } from 'firebase/firestore';
-import {app, auth, db } from '../firebase'; // Import the Auth and Firestore instances from firebase.js
+import { collection, addDoc } from 'firebase/firestore';
+import { db } from '../firebase'; // Import the Auth and Firestore instances from firebase.js
 import './PatientForm.css'
 
 const PatientForm = () => {
@@ -29,7 +29,7 @@ const PatientForm = () => {
     e.preventDefault();
     // Create a new document in the "patients" collection with the form data
     try {
-        const patientsCollectionRef = collection(db, 'patients');
+        const patientsCollectionRef = collection(db, 'tickets');
         await addDoc(patientsCollectionRef, formData);
       // Reset the form fields
       console.log('Patient submitted successfully!');

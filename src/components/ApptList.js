@@ -22,7 +22,7 @@ const AppointmentsTable = () => {
     fetchAppointments();
   }, []);
 
-  // Function to check if a date is in the future
+  // Function to check if a date is in the future // need to Check if its good
   const isFutureDate = (dateString) => {
     const today = new Date();
     const appointmentDate = new Date(dateString);

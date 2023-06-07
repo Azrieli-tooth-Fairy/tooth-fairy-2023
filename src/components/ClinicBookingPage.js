@@ -1,6 +1,6 @@
 import React, { useState , useEffect } from 'react';
-import { setDoc, doc, getDocs , collection, addDoc , getFirestore , onSnapshot, query , where} from 'firebase/firestore';
-import {app, auth, db } from '../firebase'; // Import the Auth and Firestore instances from firebase.js
+import { doc, getDocs , collection, addDoc , onSnapshot, query , updateDoc} from 'firebase/firestore';
+import { db , fetchDocumentByFieldValue} from '../firebase'; // Import the Auth and Firestore instances from firebase.js
 import emailjs from 'emailjs-com';
 
 const ClinicBookingPage = () => {
@@ -9,6 +9,9 @@ const ClinicBookingPage = () => {
   const [reason, setReason] = useState('');
   const [referralClinic, setReferralClinic] = useState('');
   const [referralText, setReferralText] = useState('');
+
+
+
 
   const handleClinicChange = (event) => {
     // setClinic(event.target.value);
@@ -63,27 +66,22 @@ const generateFirstAidDates = () => {
   const sendMailEmergency = (e) => {
     e.preventDefault();
 
-    var id = document.getElementById("idCard").value;
-    var social_worker_name = document.getElementById("social_worker_name").value;
-    var social_worker_number = document.getElementById("social_worker_number").value;
-    var referral_clinic = document.getElementById("referral_clinic").value;
-    var referral_reason = document.getElementById("referral_reason").value;
-
     const serviceID = "toothFariyAdmin";
     const templateID = "template_avh8gs5";
     // const templateID = "template_jhtva3r"; // for test
     var params = {
-        id: id,
-        social_worker_name: social_worker_name,
-        social_worker_number: social_worker_number,
-        referral_clinic: referral_clinic,
-        referral_reason: referral_reason
-    };
+        id: formData.id,
+        social_worker_name: formData.social_worker_name,
+        social_worker_number: formData.social_worker_number,
+        social_worker_mail: formData.social_worker_mail,
+        referral_clinic: formData.referralClinic,
+        referral_reason: formData.referral_reason,
+
+      };
 
     emailjs
         .send(serviceID, templateID, params,"IY_q-mRXPfxKZKMHs") // need to hide this key!
         .then((res)=> {
-            // console.log(res);
             alert("הודעתך נשלחה בהצלחה");
         })
 
@@ -91,21 +89,16 @@ const generateFirstAidDates = () => {
 // here we need to send mail to admin that the user sign in to firstAid clinic
   const sendMailFirstAid = (e) => { // need to update parameters list according to requeirements
     e.preventDefault();
-
-    var id = document.getElementById("idCard").value;
-    var social_worker_name = document.getElementById("social_worker_name").value;
-    var social_worker_number = document.getElementById("social_worker_number").value;
-    var referral_clinic = document.getElementById("referral_clinic").value;
-    var referral_reason = document.getElementById("referral_reason").value;
-
     const serviceID = "toothFariyAdmin";
     const templateID = "template_jhtva3r"; // todo - need to create new tamplate for first aid
+    
     var params = {
-        id: id,
-        social_worker_name: social_worker_name,
-        social_worker_number: social_worker_number,
-        referral_clinic: referral_clinic,
-        referral_reason: referral_reason
+        idCard: formData.idCard,
+        social_worker_name: formData.social_worker_name,
+        social_worker_number: formData.social_worker_number,
+        social_worker_mail: formData.social_worker_mail,
+        referral_clinic:formData.referralClinic,
+        referral_reason: formData.referral_reason
     };
 
     emailjs
@@ -121,8 +114,14 @@ const [formData, setFormData] = useState({
   queue: "",
   clinic: "",
   reason: "",
-  referralClinic: ""
-
+  referralClinic: "",
+  fullName: "",
+  birthDate: "",
+  organizationName: "",
+  isAccept: false,
+  social_worker_name: "",
+  social_worker_number: "",
+  social_worker_mail: ""
 });
 
 const streamFormState = (snapshot, error) => {
@@ -206,16 +205,20 @@ const handleInputChange = (event) => {
     [id]: value,
   }));
 };
+
 const handleSubmit = async (e) => {
   e.preventDefault();
   // Create a new document in the "tickets" collection with the form data
   try {
     const appointmentsCollectionRef = collection(db, 'appointments');
     await addDoc(appointmentsCollectionRef, formData);
+    // const ticketsCollectionRef = collection(db, 'tickets'); //here were going to update status
+    const ticket = await fetchDocumentByFieldValue("tickets", "idCard", formData.idCard);
+    await updateDoc(doc(db, 'tickets', ticket.docId), {"status": formData.clinic});
     // Reset the form fields
     console.log('Ticket submitted successfully!');
 
-    if(formData.clinic === 'emergency'){
+    if(formData.clinic === 'emergency_wait'){
       sendMailEmergency(e);
     }
     else if(formData.clinic === 'firstAid'){
@@ -229,6 +232,7 @@ const handleSubmit = async (e) => {
   let content = null;
 
   if (formData.clinic === 'sunday') {
+
     const sundayDates = generateSundayDates();
     content = (
       <div>
@@ -278,6 +282,8 @@ const handleSubmit = async (e) => {
                 15:00
               </option>
             </select>
+            <label htmlFor="isAccept">אני מאשר/ת כי המטופל/ת עליו/ה הזנתי את הפרטים לעיל נשלח/ת ל"פיית השיניים" מטעם העמותה ו/או הארגון שצוינו לעיל.</label>
+            <input type="checkbox" id="isAccept" name="isAccept" value={formData.isAccept} onChange={handleInputChange} required/><br />
 
           </div>
         )}
@@ -296,38 +302,51 @@ const handleSubmit = async (e) => {
     content = (
       <div>
         <label htmlFor="idCard">:מספר תעודת זהות</label>
-        <input type="number" id="idCard" required/>
+        <input type="number" id="idCard" name='idCard' value={formData.idCard}
+          onChange={handleInputChange}  required/>
 
         <h4>:בחר תאריך</h4>
         {firstAidDates.map((date) => (
-          <button name="date" key={date} onClick={(e) => handleSelection(e)}>
+          <button name="date" key={date} value={date} onClick={(e) => handleSelection(e)}>
             {date}
           </button>
         ))}
 
-        {selectedDate && (
+        <label htmlFor="isAccept">אני מאשר/ת כי המטופל/ת עליו/ה הזנתי את הפרטים לעיל נשלח/ת ל"פיית השיניים" מטעם העמותה או הארגון שצוינו לעיל.</label>
+        <input type="checkbox" id="isAccept" name="isAccept" value={formData.isAccept} onChange={handleInputChange} required/><br />
+
+        {formData.date && (
           <div>
             <h3>התור שנבחר</h3>
-            <p>:תאריך {selectedDate}</p>
+            <p>:תאריך {formData.date}</p>
             <p>שעה: 8:30</p>
           </div>
         )}
       </div>
     );
-  } else if (formData.clinic === 'emergency') {
+  } else if (formData.clinic === 'emergency_wait') {
     content = (
       <div>
         <label htmlFor="idCard">:מספר תעודת זהות</label>
-        <input type="number" id="idCard" required/>
+        <input type="number" id="idCard" value={formData.idCard} name='idCard' onChange={handleInputChange} required/>
+
+        <label htmlFor="fullName">:שם מלא</label>
+        <input type="text" id="fullName" value={formData.fullName} name='fullName' onChange={handleInputChange} required/>
+
+        <label htmlFor="birthDate">:תאריך לידה</label>
+        <input type="date" id="birthDate" value={formData.birthDate} name='birthDate' onChange={handleInputChange} required/>
+
+        <label htmlFor="organizationName">:שם עמותה</label>
+        <input type="text" id="organizationName"value={formData.organizationName} name='organizationName' onChange={handleInputChange}  required/>
 
         <label htmlFor="social_worker_name">:שם עובד סוציאלי</label>
-        <input type="text" id="social_worker_name" required/>
+        <input type="text" id="social_worker_name" value={formData.social_worker_name} name='social_worker_name' onChange={handleInputChange} required/>
 
         <label htmlFor="social_worker_number">:מס' פלאפון של עובד סוציאלי</label>
-        <input type="number" id="social_worker_number" required/>
+        <input type="number" id="social_worker_number" value={formData.social_worker_number} name='social_worker_number' onChange={handleInputChange}  required/>
 
         <label htmlFor="social_worker_mail">:מייל של עובד סוציאלי</label>
-        <input type="mail" id="social_worker_mail" required/>
+        <input type="mail" id="social_worker_mail" value={formData.social_worker_mail} name='social_worker_mail' onChange={handleInputChange} required/>
 
         <h4>:סיבת הפנייה</h4>
         <textarea name='reason' value={formData.reason} id = "referral_reason" onChange={(e) => handleSelection(e)} required/>
@@ -368,9 +387,13 @@ const handleSubmit = async (e) => {
             required
           />
           :אחר
-          {/* <input type="text" value={referralText} onChange={handleReferralTextChange} required/> */}
           <input type="text" value={referralClinic} onChange={(e) =>handleSelection(e)} required/>
         </label>
+
+        <label htmlFor="isAccept">אני מאשר/ת כי המטופל/ת עליו/ה הזנתי את הפרטים לעיל נשלח/ת ל"פיית השיניים" מטעם העמותה ו/או הארגון שצוינו לעיל.</label>
+        <input type="checkbox" id="isAccept" name="isAccept" value={formData.isAccept} onChange={handleInputChange} required/><br />
+
+
         <h6>יצרו איתך קשר על מנת לתאם תור למיון</h6>
       </div>
     );
@@ -383,11 +406,11 @@ const handleSubmit = async (e) => {
         <option value="">אנא בחר מרפאה</option>
         <option value="sunday">מרפאת יום א</option>
         <option value="firstAid">מרפאת עזרה ראשונה</option>
-        <option value="emergency">מרפאת מיון</option>
+        <option value="emergency_wait">מרפאת מיון</option>
       </select>
       <h1>{formData.clinic}</h1>
       {content}
-
+      
       {formData.clinic && (
         <button type="submit" onClick={handleSubmit}>
           שלח בקשה

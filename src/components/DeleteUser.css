@@ -1,0 +1,38 @@
+/* DeleteUser.css */
+.UsersList {
+    margin-top: 20px;
+  }
+  
+  .UsersList h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  
+  .UsersList table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .UsersList th,
+  .UsersList td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .UsersList th {
+    background-color: #f2f2f2;
+  }
+  
+  .UsersList .delete-button {
+    background-color: #ff0000;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+  
+  .UsersList .delete-button:hover {
+    background-color: #cc0000;
+  }
+  

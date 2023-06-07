@@ -1,6 +1,6 @@
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-import { getFirestore} from 'firebase/firestore'
-import React, { useState, useEffect } from 'react';
+import {  getDocs , collection , getFirestore , query , where} from 'firebase/firestore';
+// import React, { useState, useEffect } from 'react';
 import { initializeApp } from "firebase/app";
 
 // Your web app's Firebase configuration
@@ -25,8 +25,20 @@ export const logInWithEmailAndPassword = async (email, password) => {
   try {
     await signInWithEmailAndPassword(auth, email, password);
     console.log("login succses!")
+    return true;
   } catch (err) {
     console.error(err);
     alert(err.message);
+    return false;
   }
 };
+
+export const fetchDocumentByFieldValue = async (collectionName, fieldName, fieldValue) => {
+  const q = query(collection(db, collectionName), where(fieldName, '==', fieldValue));
+  const querySnapshot = await getDocs(q);
+  
+  const documents = querySnapshot.docs.map((doc) => {let data = doc.data(); data.docId = doc.id; return data});
+  
+  return documents[0];
+};
+

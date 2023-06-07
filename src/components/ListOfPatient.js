@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { collection, getDocs, query, where } from 'firebase/firestore';
+import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import { db } from '../firebase';
 import './ListOfPatient.css';
 
@@ -12,7 +12,7 @@ const PatientList = () => {
     const fetchPatients = async () => {
       try {
         const querySnapshot = await getDocs(collection(db, 'tickets'));
-        const patientList = querySnapshot.docs.map((doc) => doc.data());
+        const patientList = querySnapshot.docs.map((doc) =>{let data = doc.data(); data.docId = doc.id; return data});
         setPatients(patientList);
       } catch (error) {
         console.log('Error fetching patients:', error);
@@ -28,15 +28,26 @@ const PatientList = () => {
         setFilteredPatients(patients);
       } else {
         const filtered = patients.filter(
-          (patient) => patient.idCard.toLowerCase().indexOf(searchId.toLowerCase()) !== -1
+          (patient) => patient.id && patient.id.toLowerCase().indexOf(searchId.toLowerCase()) !== -1
         );
         setFilteredPatients(filtered);
       }
     };
-
+  
     filterPatients();
   }, [searchId, patients]);
+  
 
+  const deleteUser = async (id) => {
+    try {
+      const docRef = doc(db, 'tickets', id);
+      await deleteDoc(docRef);
+      console.log('User deleted successfully');
+    } catch (error) {
+      console.log('Error deleting user:', error);
+    }
+  };
+  
   return (
     <div className="PatientList">
       <div className="search-bar">
@@ -59,19 +70,23 @@ const PatientList = () => {
               <th>Social Worker Number</th>
               <th>Organization Name</th>
               <th>Status</th>
+              <th>Actions</th> {/* Add a column for actions */}
             </tr>
           </thead>
           <tbody>
-            {filteredPatients.map((patient, index) => (
-              <tr key={index}>
-                <td>{patient.idCard}</td>
-                <td>{patient.fullName}</td>
-                <td>{patient.socialWorker}</td>
-                <td>{patient.phoneNumber}</td>
-                <td>{patient.organization}</td>
-                <td>{patient.status}</td>
-              </tr>
-            ))}
+          {filteredPatients.map((patient, index) => (
+          <tr key={index}>
+            <td>{patient.idCard}</td>
+            <td>{patient.fullName}</td>
+            <td>{patient.socialWorker}</td>
+            <td>{patient.phoneNumber}</td>
+            <td>{patient.organization}</td>
+            <td>{patient.status}</td>
+            <td>
+              <button className="delete-button" onClick={() => deleteUser(patient.docId)}>Delete</button>
+            </td>
+          </tr>
+        ))}
           </tbody>
         </table>
       ) : (

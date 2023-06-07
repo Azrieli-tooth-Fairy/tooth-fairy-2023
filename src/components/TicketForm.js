@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { setDoc, doc, collection, addDoc , getFirestore } from 'firebase/firestore';
-import {app, auth, db } from '../firebase'; // Import the Auth and Firestore instances from firebase.js
+import { collection, addDoc } from 'firebase/firestore';
+import { db } from '../firebase'; // Import the Auth and Firestore instances from firebase.js
 import './TicketForm.css'
 //רשימת הבקשות לתור - העובד הסוציאלי
 // שלב מעבר מקביעת התור עד שהתור הופך לפגישה
@@ -12,6 +12,7 @@ const TicketForm = () => {
         fullName: "",
         idCard: "",
         gender: "",
+        nickName: "",
         organization: "",
         socialWorker: "",
         phoneNumber: "",
@@ -54,6 +55,15 @@ const TicketForm = () => {
             value={formData.fullName}
             onChange={handleInputChange}
             required
+          />
+        </div>
+        <div>
+          <label htmlFor="nickName">:כינוי</label>
+          <input
+            type="text"
+            id="nickName"
+            value={formData.nickName}
+            onChange={handleInputChange}
           />
         </div>
         <div>
@@ -153,6 +163,3 @@ const TicketForm = () => {
 };
 
 export default TicketForm;
-
-{/* <button onClick={() => handleQueueSelection('14:00')}>14:00</button>
-<button onClick={() => handleQueueSelection('15:00')}>15:00</button> */}
