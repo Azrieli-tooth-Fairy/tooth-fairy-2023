@@ -14,6 +14,10 @@ import ClinicBookingPage from './components/ClinicBookingPage';
 import EmergenceAppt from './components/EmergenceAppt';
 import CancelAppointment from './components/CancelAppointment';
 import DeleteUser from './components/DeleteUser'
+import PatientSw from './components/PatientSw'
+import StatusChange from './components/StatusChange'
+
+
 import SwList from './components/SwList';
 import { BrowserRouter, Routes, Route, Outlet, Navigate } from 'react-router-dom';
 import '@fortawesome/fontawesome-free/css/all.min.css';
@@ -55,6 +59,8 @@ function App() {
               <Route path="emergence_appt" element={<EmergenceAppt />} />
               <Route path="cancel_appointment" element={<CancelAppointment />} />
               <Route path="sw_list" element={<SwList />} />
+              <Route path="patient_sw" element={<PatientSw />} />
+              <Route path="status_change" element={<StatusChange />} />
               <Route path="delete_user" element={<DeleteUser />} />
               <Route path="*" element={isLoggedIn ? <></> : <LogIn onLogin={handleLogin} setUserId = {setUserIdState}/>} />
             </Route>

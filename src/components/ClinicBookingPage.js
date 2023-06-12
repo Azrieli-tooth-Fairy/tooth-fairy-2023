@@ -84,30 +84,9 @@ const generateFirstAidDates = () => {
         .then((res)=> {
             alert("הודעתך נשלחה בהצלחה");
         })
-
-}
-// here we need to send mail to admin that the user sign in to firstAid clinic
-  const sendMailFirstAid = (e) => { // need to update parameters list according to requeirements
-    e.preventDefault();
-    const serviceID = "toothFariyAdmin";
-    const templateID = "template_jhtva3r"; // todo - need to create new tamplate for first aid
-    
-    var params = {
-        idCard: formData.idCard,
-        social_worker_name: formData.social_worker_name,
-        social_worker_number: formData.social_worker_number,
-        social_worker_mail: formData.social_worker_mail,
-        referral_clinic:formData.referralClinic,
-        referral_reason: formData.referral_reason
-    };
-
-    emailjs
-        .send(serviceID, templateID, params,"IY_q-mRXPfxKZKMHs") // need to hide this key!
-        .then((res)=> {
-            // console.log(res);
-            alert("הודעתך נשלחה בהצלחה");
-        })
   }
+// here we need to send mail to admin that the user sign in to firstAid clinic
+  
 const [formData, setFormData] = useState({
   idCard: "",
   date: "",
@@ -206,6 +185,8 @@ const handleInputChange = (event) => {
   }));
 };
 
+
+
 const handleSubmit = async (e) => {
   e.preventDefault();
   // Create a new document in the "tickets" collection with the form data
@@ -214,6 +195,11 @@ const handleSubmit = async (e) => {
     await addDoc(appointmentsCollectionRef, formData);
     // const ticketsCollectionRef = collection(db, 'tickets'); //here were going to update status
     const ticket = await fetchDocumentByFieldValue("tickets", "idCard", formData.idCard);
+    //here were going to check if this user status is general or not. if not - he cant sign to sunday clinic
+    if (ticket.status !== "general" && formData.clinic === "sunday") {
+      alert("Patient status is not general, he can't sign in to sunday clinic");
+    }
+    else {
     await updateDoc(doc(db, 'tickets', ticket.docId), {"status": formData.clinic});
     // Reset the form fields
     console.log('Ticket submitted successfully!');
@@ -222,8 +208,9 @@ const handleSubmit = async (e) => {
       sendMailEmergency(e);
     }
     else if(formData.clinic === 'firstAid'){
-      sendMailFirstAid(e);
+      //sendMailFirstAid(e);
     }
+  }
   } catch (error) {
     console.error('Error submitting ticket:', error);
   }
@@ -232,7 +219,6 @@ const handleSubmit = async (e) => {
   let content = null;
 
   if (formData.clinic === 'sunday') {
-
     const sundayDates = generateSundayDates();
     content = (
       <div>
@@ -404,7 +390,7 @@ const handleSubmit = async (e) => {
       <h2>קביעת תור למרפאה</h2>
       <select value={formData.clinic} onChange={handleClinicChange}>
         <option value="">אנא בחר מרפאה</option>
-        <option value="sunday">מרפאת יום א</option>
+        <option value="sunday" >מרפאת יום א</option>
         <option value="firstAid">מרפאת עזרה ראשונה</option>
         <option value="emergency_wait">מרפאת מיון</option>
       </select>

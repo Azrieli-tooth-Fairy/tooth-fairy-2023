@@ -1,4 +1,4 @@
-.ticket-form-container {
+/* .ticket-form-container {
     max-width: 400px;
     margin: 0 auto;
     padding: 20px;
@@ -45,5 +45,31 @@
   
   button[type='submit']:hover {
     background-color: #0056b3;
+  }
+   */
+   .form-row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+  }
+  
+  .form-row .form-group {
+    flex-basis: 50%;
+  }
+  
+  .form-label {
+    font-weight: bold;
+  }
+  
+  .form-control {
+    width: 100%;
+  }
+  
+  .form-check-label {
+    margin-right: 5px;
+  }
+  
+  .btn-submit {
+    margin-top: 10px;
   }
   

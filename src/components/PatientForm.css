@@ -1,0 +1,21 @@
+.PatientForm {
+    .card-body {
+      @media (min-width: 768px) {
+        display: flex;
+        flex-wrap: wrap;
+      }
+  
+      .form-group {
+        @media (min-width: 768px) {
+          flex-basis: 50%;
+          max-width: 50%;
+        }
+  
+        @media (min-width: 992px) {
+          flex-basis: 33.33%;
+          max-width: 33.33%;
+        }
+      }
+    }
+  }
+  

@@ -5,6 +5,10 @@ import './ApptList.css';
 
 const AppointmentsTable = () => {
   const [appointments, setAppointments] = useState([]);
+  const [ticketData, setTicketData] = useState(null);
+  const [status, setStatus] = useState('');
+
+  
 
   useEffect(() => {
     // Fetch the appointment data from Firestore collection
@@ -12,7 +16,7 @@ const AppointmentsTable = () => {
       try {
         const appointmentsColRef = collection(db, 'appointments');
         const querySnapshot = await getDocs(appointmentsColRef);
-        const appointmentsData = querySnapshot.docs.map((doc) => doc.data());
+        const appointmentsData = querySnapshot.docs.map((doc) =>{let data = doc.data(); data.docId = doc.id; return data});
         setAppointments(appointmentsData);
       } catch (error) {
         console.log('Error fetching appointments:', error);
@@ -21,12 +25,13 @@ const AppointmentsTable = () => {
 
     fetchAppointments();
   }, []);
+  
 
   // Function to check if a date is in the future // need to Check if its good
   const isFutureDate = (dateString) => {
     const today = new Date();
     const appointmentDate = new Date(dateString);
-    return appointmentDate > today;
+    return appointmentDate >= today;
   };
 
   return (
@@ -35,13 +40,13 @@ const AppointmentsTable = () => {
       <table>
         <thead>
           <tr>
-            <th>ID</th>
-            <th>Date</th>
-            <th>Clinic</th>
-            <th>Queue</th>
-            <th>Reason</th>
-            <th>Referral Clinic</th>
-            <th>Status</th>
+            <th>תז</th>
+            <th>תאריך</th>
+            <th>שעה</th>
+            <th>מרפאה</th>
+            <th>סיבת הפנייה</th>
+            <th>מרפאה מפנה</th>
+            {/* <th>סטאטוס מטופל</th> */}
           </tr>
         </thead>
         <tbody>
@@ -50,12 +55,12 @@ const AppointmentsTable = () => {
               return (
                 <tr key={index}>
                   <td>{appointment.idCard}</td>
-                  <td>{appointment.date}</td>
                   <td>{appointment.clinic}</td>
+                  <td>{appointment.date}</td>
                   <td>{appointment.queue}</td>
                   <td>{appointment.reason}</td>
                   <td>{appointment.referralClinic}</td>
-                  <td>{appointment.status}</td>
+                  {/* <td>{patient.status}</td> */}
                 </tr>
               );
             } else {

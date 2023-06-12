@@ -32,6 +32,8 @@ const CancelAppointment = () => {
     try {
       await deleteDoc(doc(db, 'appointments', appointmentId));
       console.log('Appointment canceled successfully!');
+      alert('Appointment canceled successfully!');
+
       // Remove the canceled appointment from the list
       setAppointments((prevAppointments) =>
         prevAppointments.filter((appointment) => appointment.id !== appointmentId)
@@ -51,9 +53,9 @@ const CancelAppointment = () => {
     <div>
       <h2>Cancel Appointment</h2>
       <form onSubmit={handleFormSubmit}>
-        <label htmlFor="patientId">Patient ID:</label>
+        <label htmlFor="patientId">תז מטופל</label>
         <input type="text" id="patientId" name="patientId" required />
-        <button type="submit">Fetch Appointments</button>
+        <button type="submit">הצג פגישות</button>
       </form>
        {/* {patientId && appointments.length === 0 && (
         alert("There is no appointments for this ID. \nMake sure the ID is true.")
@@ -62,10 +64,10 @@ const CancelAppointment = () => {
         <table className="appointment-table">
           <thead>
             <tr>
-              <th>Date</th>
-              <th>Hour</th>
-              <th>Clinic Name</th>
-              <th>Actions</th>
+              <th>תאריך</th>
+              <th>שעה</th>
+              <th>שם מרפאה</th>
+              <th>פעולה</th>
             </tr>
           </thead>
           <tbody>
@@ -75,7 +77,7 @@ const CancelAppointment = () => {
                 <td>{appointment.queue}</td>
                 <td>{appointment.clinic}</td>
                 <td>
-                  <button onClick={() => handleCancelAppointment(appointment.id)}>Cancel Appointment</button>
+                  <button onClick={() => handleCancelAppointment(appointment.id)}>ביטול פגישה</button>
                 </td>
               </tr>
             ))}

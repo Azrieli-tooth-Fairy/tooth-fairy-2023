@@ -1,6 +1,7 @@
   import React, { useState } from 'react';
   import { collection, addDoc } from 'firebase/firestore';
   import { db } from '../firebase'; // Import the Auth and Firestore instances from firebase.js
+  import emailjs from 'emailjs-com';
 
   const ClinicBookingPage = () => {
 
@@ -29,16 +30,36 @@
     idCard: "",
     date: getCurrentDate(),
     queue: "",
-    clinic: "",
+    clinic: "emergency",
     reason: "",
     referralClinic: "",
+    referral_clinic: "",
     social_worker_name: "",
     social_worker_mail: "",
     social_worker_number: ""
 
   });
   
-  
+  const sendMailEmergency = (e) => {
+    e.preventDefault();
+
+    const serviceID = "toothFariyAdmin";
+    const templateID = "template_jhtva3r";
+    // const templateID = "template_jhtva3r"; // for test
+    var params = {
+        idCard: formData.id,
+        social_worker_name: formData.social_worker_name,
+        social_worker_mail: formData.social_worker_mail,
+        date: formData.date,
+        queue: formData.queue
+      };
+
+    emailjs
+        .send(serviceID, templateID, params,"IY_q-mRXPfxKZKMHs") // need to hide this key!
+        .then((res)=> {
+            alert("הודעתך נשלחה בהצלחה");
+        })
+  }
 
   const handleInputChange = (event) => {
       const { id, value } = event.target;
@@ -55,7 +76,9 @@
       const ticketsCollectionRef = collection(db, 'appointments');
       await addDoc(ticketsCollectionRef, formData);
     // Reset the form fields
+    sendMailEmergency(e);
     console.log('Ticket submitted successfully!');
+    alert("appointment submitted successfully!")
   } catch (error) {
     console.error('Error submitting ticket:', error);
   }
@@ -84,14 +107,13 @@
           <h4>:סיבת הפנייה</h4>
           <textarea name='reason' value={formData.reason} id = "referral_reason" onChange={(e) => handleSelection(e)} required/>
 
-      {/*dosn't work!!  */}
           <h4>:מרפאה מפנה</h4>
-          {/* <label>
+          <label>
             <input
               type="radio"
-              name="referralClinic"
+              name="referral_clinic"
               value="sundayClinic"
-              checked={referralClinic === 'sundayClinic'}
+              checked={formData.referral_clinic === 'sundayClinic'}
               onChange={(e) =>handleSelection(e)}
               id = "referral_clinic"
               required
@@ -101,9 +123,9 @@
           <label>
             <input
               type="radio"
-              name="referralClinic"
+              name="referral_clinic"
               value="firstAidClinic"
-              checked={referralClinic === 'firstAidClinic'}
+              checked={formData.referral_clinic === 'firstAidClinic'}
               onChange={(e) =>handleSelection(e)}
               id = "referral_clinic"
               required
@@ -113,16 +135,16 @@
           <label>
             <input
               type="radio"
-              name="referralClinic"
+              name="referral_clinic"
               value="other"
-              checked={referralClinic === 'other'}
+              checked={formData.referral_clinic === 'other'}
               onChange={(e) =>handleSelection(e)}
               id = "referral_clinic"
               required
             />
             :אחר
-            <input type="text" value={referralClinic} onChange={(e) =>handleSelection(e)} required/>
-          </label> */}
+            <input type="text" value={formData.referral_clinic} onChange={(e) =>handleSelection(e)} required/>
+          </label>
         </div>
       );
 

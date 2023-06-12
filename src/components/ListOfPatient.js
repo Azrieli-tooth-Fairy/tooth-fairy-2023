@@ -59,18 +59,18 @@ const PatientList = () => {
         />
         {/* Add a search icon here */}
       </div>
-      <h2>Patient List</h2>
+      <h2>רשימת מטופלים</h2>
       {filteredPatients.length > 0 ? (
         <table>
           <thead>
             <tr>
-              <th>ID Card</th>
-              <th>Full Name</th>
-              <th>Social Worker Name</th>
-              <th>Social Worker Number</th>
-              <th>Organization Name</th>
-              <th>Status</th>
-              <th>Actions</th> {/* Add a column for actions */}
+              <th>תעודת זהות</th>
+              <th>שם מלא</th>
+              <th>שם עובד סוציאלי</th>
+              <th>מייל עובד סוציאלי</th>
+              <th>ם עמותה</th>
+              <th>סטאטוס</th>
+              <th>פעולה</th> {/* Add a column for actions */}
             </tr>
           </thead>
           <tbody>
@@ -83,14 +83,14 @@ const PatientList = () => {
             <td>{patient.organization}</td>
             <td>{patient.status}</td>
             <td>
-              <button className="delete-button" onClick={() => deleteUser(patient.docId)}>Delete</button>
+              <button className="delete-button" onClick={() => deleteUser(patient.docId)}>מחק</button>
             </td>
           </tr>
         ))}
           </tbody>
         </table>
       ) : (
-        <p>No patients found.</p>
+        <p>לא נמצאו מטופלים</p>
       )}
     </div>
   );

@@ -43,6 +43,7 @@ const UserList = () => {
       const docRef = doc(db, 'users', id);
       await deleteDoc(docRef);
       console.log('User deleted successfully');
+      alert("User deleted successfully");
     } catch (error) {
       console.log('Error deleting user:', error);
     }
@@ -51,14 +52,14 @@ const UserList = () => {
   return (
     <div className="UsersList">
       {/*  */}
-      <h2>users List</h2>
+      <h2>רשימת משתמשים</h2>
       {filteredUsers.length > 0 ? (
         <table>
           <thead>
             <tr>
-              <th>Full Name</th>
-              <th>Role</th>
-              <th>Actions</th> {/* Add a column for actions */}
+              <th>שם מלא</th>
+              <th>תפקיד</th>
+              <th>פעולות</th> {/* Add a column for actions */}
             </tr>
           </thead>
           <tbody>
@@ -67,14 +68,14 @@ const UserList = () => {
             <td>{user.full_name}</td>
             <td>{user.role}</td>
             <td>
-              <button className="delete-button" onClick={() => deleteUser(user.docId)}>Delete</button>
+              <button className="delete-button" onClick={() => deleteUser(user.docId)}>מחק משתמש</button>
             </td>
           </tr>
         ))}
           </tbody>
         </table>
       ) : (
-        <p>No users found.</p>
+        <p>לא נמצאו משתמשים</p>
       )}
     </div>
   );

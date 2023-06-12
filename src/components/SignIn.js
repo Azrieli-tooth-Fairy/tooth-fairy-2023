@@ -53,6 +53,7 @@ const handleSubmit = async (e) => {
       .then(() => {
         handleSubmit();
         console.log('signIn successful');
+        alert("signIn successful!");
         form.reset();
       })
       .catch((error) => {
@@ -61,7 +62,7 @@ const handleSubmit = async (e) => {
   };
 
   return (
-    <div>
+    <div className="input-form">
       <h1>טופס רישום</h1>
       <label htmlFor="role">:תפקיד</label>
       <select id="role" name="role" value={formData.role} onChange={handleInputChange}>

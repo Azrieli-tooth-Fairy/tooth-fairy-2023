@@ -63,9 +63,9 @@ const CancelSundayClinic = () => {
 
   return (
     <div>
-      <h2>Cancel Sunday Clinic</h2>
+      <h2>ביטול מרפאת יום ראשון</h2>
       <form onSubmit={handleSubmit}>
-        <label htmlFor="date">Select a Sunday:</label>
+        <label htmlFor="date">בחר יום ראשון </label>
         <select id="date" value={selectedDate} onChange={handleDateChange} required>
           <option value="">-- Select Date --</option>
           {/* Render options for the next 6 Sundays */}
@@ -75,7 +75,7 @@ const CancelSundayClinic = () => {
             </option>
           ))}
         </select>
-        <button type="submit">Submit</button>
+        <button type="submit">שלח</button>
       </form>
     </div>
   );

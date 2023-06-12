@@ -35,9 +35,9 @@ const SwList = () => {
       <table>
         <thead>
           <tr>
-            <th>Full Name</th>
-            <th>Phone Number</th>
-            <th>Organization Name</th>
+            <th>שם מלא</th>
+            <th>מספר פלאפון</th>
+            <th>שם עמותה</th>
           </tr>
         </thead>
         <tbody>
