@@ -36,34 +36,33 @@ const PatientSw = () => {
           <table>
             <tbody>
               <tr>
-                <td>תעודת זהות</td>
-                <td>{ticketData.idCard}</td>
-              </tr>
-              <tr>
-                <td>שם מלא</td>
-                <td>{ticketData.fullName}</td>
-              </tr>
-              <tr>
-                <td>כינוי</td>
-                <td>{ticketData.nickName}</td>
-              </tr>
-              <tr>
-                <td>מגדר</td>
-                <td>{ticketData.gender}</td>
-              </tr>
-              <tr>
-                <td>מספר פלאפון</td>
-                <td>{ticketData.phoneNumber}</td>
+                <td>סטאטוס</td>
+                <td>{ticketData.status}</td>
               </tr>
               <tr>
                 <td>שם העמותה</td>
                 <td>{ticketData.organization}</td>
               </tr>
               <tr>
-                <td>סטאטוס</td>
-                <td>{ticketData.status}</td>
+                <td>מספר פלאפון</td>
+                <td>{ticketData.phoneNumber}</td>
               </tr>
-              {/* Add more ticket data fields as needed */}
+              <tr>
+                <td>מגדר</td>
+                <td>{ticketData.gender}</td>
+              </tr>
+              <tr>
+                <td>כינוי</td>
+                <td>{ticketData.nickName}</td>
+              </tr>
+              <tr>
+                <td>שם מלא</td>
+                <td>{ticketData.fullName}</td>
+              </tr>
+              <tr>
+                <td>תעודת זהות</td>
+                <td>{ticketData.idCard}</td>
+              </tr>
             </tbody>
           </table>
         </div>

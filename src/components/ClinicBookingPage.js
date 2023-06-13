@@ -27,40 +27,69 @@ const ClinicBookingPage = () => {
     setFormData({ ...formData, [event.target.name]: event.target.value });
   }
 
-  // Helper function to generate Sunday dates
+  // // Helper function to generate Sunday dates
+  // const generateSundayDates = () => {
+  //   const dates = [];
+  //   const currentDate = new Date();
+  //   const daysUntilSunday = (7 - currentDate.getDay()) % 7;
+  //   currentDate.setDate(currentDate.getDate() + daysUntilSunday);
+
+  //   for (let i = 0; i < 4; i++) {
+  //     const date = new Date(currentDate);
+  //     date.setDate(date.getDate() + i * 7);
+  //     dates.push(date.toISOString().split('T')[0]);
+  //   }
+
+  //   return dates;
+  // };
   const generateSundayDates = () => {
     const dates = [];
     const currentDate = new Date();
     const daysUntilSunday = (7 - currentDate.getDay()) % 7;
     currentDate.setDate(currentDate.getDate() + daysUntilSunday);
-
+  
     for (let i = 0; i < 4; i++) {
       const date = new Date(currentDate);
       date.setDate(date.getDate() + i * 7);
-      dates.push(date.toISOString().split('T')[0]);
+  
+      const dayOfMonth = date.getDate().toString().padStart(2, '0');
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const year = date.getFullYear().toString();
+      const formattedDate = `${dayOfMonth}/${month}/${year}`;
+      
+      dates.push(formattedDate);
     }
-
+  
     return dates;
   };
+  
 
-// Helper function to generate next three available dates for first aid clinic (excluding Fridays and Saturdays)
+
 const generateFirstAidDates = () => {
-    const dates = [];
-    const currentDate = new Date();
-    currentDate.setDate(currentDate.getDate() + 1); // Start from tomorrow
-    for (let i = 0; i < 3; ) {
-      const date = new Date(currentDate);
-      const day = date.getDay(); // 0: Sunday, 1: Monday, ..., 6: Saturday
-      if (day !== 5 && day !== 6) {
-        dates.push(date.toISOString().split('T')[0]);
-        i++; // Increment i only if a valid date is added
-      }
-  
-      currentDate.setDate(currentDate.getDate() + 1);
+  const dates = [];
+  const currentDate = new Date();
+  currentDate.setDate(currentDate.getDate() + 1); // Start from tomorrow
+
+  for (let i = 0; i < 3; ) {
+    const date = new Date(currentDate);
+    const day = date.getDay(); // 0: Sunday, 1: Monday, ..., 6: Saturday
+
+    if (day !== 5 && day !== 6) {
+      const dayOfMonth = date.getDate().toString().padStart(2, '0');
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const year = date.getFullYear().toString();
+      const formattedDate = `${dayOfMonth}/${month}/${year}`;
+      
+      dates.push(formattedDate);
+      i++; // Increment i only if a valid date is added
     }
-  
-    return dates;
-  };
+
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+
+  return dates;
+};
+
 
 //--------------------------------------------========-----EMAILJS - here were gonna send the admin the needed appointment
   const sendMailEmergency = (e) => {
@@ -179,6 +208,10 @@ const getCount = (date, queue) => {
  
 const handleInputChange = (event) => {
   const { id, value } = event.target;
+  // if (id === "idCard" && value.length !== 9) {
+  //   alert("אנא הכנס תז תקין");
+  //   return;
+  // }
   setFormData((prevFormData) => ({
     ...prevFormData,
     [id]: value,
@@ -195,9 +228,19 @@ const handleSubmit = async (e) => {
     await addDoc(appointmentsCollectionRef, formData);
     // const ticketsCollectionRef = collection(db, 'tickets'); //here were going to update status
     const ticket = await fetchDocumentByFieldValue("tickets", "idCard", formData.idCard);
+    if (formData.idCard.length !== 9) {
+      alert("The ID card number must be exactly 9 digits.");
+      return;
+    }
+    if (formData.social_worker_number.length !== 10){
+      alert("The number must be exactly 10 digits.");
+      return;
+    }
     //here were going to check if this user status is general or not. if not - he cant sign to sunday clinic
-    if (ticket.status !== "general" && formData.clinic === "sunday") {
-      alert("Patient status is not general, he can't sign in to sunday clinic");
+    if(ticket.status){
+      if (ticket.status !== "general" && formData.clinic === "sunday") {
+        alert("Patient status is not general, he can't sign in to sunday clinic");
+      }
     }
     else {
     await updateDoc(doc(db, 'tickets', ticket.docId), {"status": formData.clinic});
@@ -285,31 +328,61 @@ const handleSubmit = async (e) => {
     );
   } else if (formData.clinic === 'firstAid') {
     const firstAidDates = generateFirstAidDates();
+    // content = (
+    //   <div>
+    //     <label htmlFor="idCard">:מספר תעודת זהות</label>
+    //     <input type="number" id="idCard" name='idCard' value={formData.idCard}
+    //       onChange={handleInputChange}  required/>
+
+    //     <h4>:בחר תאריך</h4>
+    //     {firstAidDates.map((date) => (
+    //       <button name="date" key={date} value={date} onClick={(e) => handleSelection(e)}>
+    //         {date}
+    //       </button>
+    //     ))}
+
+    //     <label htmlFor="isAccept">אני מאשר/ת כי המטופל/ת עליו/ה הזנתי את הפרטים לעיל נשלח/ת ל"פיית השיניים" מטעם העמותה או הארגון שצוינו לעיל.</label>
+    //     <input type="checkbox" id="isAccept" name="isAccept" value={formData.isAccept} onChange={handleInputChange} required/><br />
+
+    //     {formData.date && (
+    //       <div>
+    //         <h3>התור שנבחר</h3>
+    //         <p> {formData.date} :תאריך</p>
+    //         <p>שעה: 8:30</p>
+    //       </div>
+    //     )}
+    //   </div>
+    // );
     content = (
       <div>
         <label htmlFor="idCard">:מספר תעודת זהות</label>
-        <input type="number" id="idCard" name='idCard' value={formData.idCard}
-          onChange={handleInputChange}  required/>
-
+        <input type="number" id="idCard" name='idCard' value={formData.idCard} onChange={handleInputChange} required />
+    
         <h4>:בחר תאריך</h4>
-        {firstAidDates.map((date) => (
-          <button name="date" key={date} value={date} onClick={(e) => handleSelection(e)}>
-            {date}
-          </button>
-        ))}
-
-        <label htmlFor="isAccept">אני מאשר/ת כי המטופל/ת עליו/ה הזנתי את הפרטים לעיל נשלח/ת ל"פיית השיניים" מטעם העמותה או הארגון שצוינו לעיל.</label>
-        <input type="checkbox" id="isAccept" name="isAccept" value={formData.isAccept} onChange={handleInputChange} required/><br />
-
+        <select id="date" name="date" value={formData.date} onChange={handleInputChange} required>
+          <option value="">בחר תאריך</option>
+          {firstAidDates.map((date) => (
+            <option key={date} value={date}>
+              {date}
+            </option>
+          ))}
+        </select>
+    
+        <label htmlFor="isAccept">
+          אני מאשר/ת כי המטופל/ת עליו/ה הזנתי את הפרטים לעיל נשלח/ת ל"פיית השיניים" מטעם העמותה או הארגון שצוינו לעיל.
+        </label>
+        <input type="checkbox" id="isAccept" name="isAccept" value={formData.isAccept} onChange={handleInputChange} required /><br />
+    
         {formData.date && (
           <div>
             <h3>התור שנבחר</h3>
-            <p>:תאריך {formData.date}</p>
+            <p>{formData.date} :תאריך</p>
             <p>שעה: 8:30</p>
           </div>
         )}
       </div>
     );
+    
   } else if (formData.clinic === 'emergency_wait') {
     content = (
       <div>
@@ -329,7 +402,7 @@ const handleSubmit = async (e) => {
         <input type="text" id="social_worker_name" value={formData.social_worker_name} name='social_worker_name' onChange={handleInputChange} required/>
 
         <label htmlFor="social_worker_number">:מס' פלאפון של עובד סוציאלי</label>
-        <input type="number" id="social_worker_number" value={formData.social_worker_number} name='social_worker_number' onChange={handleInputChange}  required/>
+        <input type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" id="social_worker_number" value={formData.social_worker_number} name='social_worker_number' onChange={handleInputChange}  required/>
 
         <label htmlFor="social_worker_mail">:מייל של עובד סוציאלי</label>
         <input type="mail" id="social_worker_mail" value={formData.social_worker_mail} name='social_worker_mail' onChange={handleInputChange} required/>
@@ -378,7 +451,6 @@ const handleSubmit = async (e) => {
 
         <label htmlFor="isAccept">אני מאשר/ת כי המטופל/ת עליו/ה הזנתי את הפרטים לעיל נשלח/ת ל"פיית השיניים" מטעם העמותה ו/או הארגון שצוינו לעיל.</label>
         <input type="checkbox" id="isAccept" name="isAccept" value={formData.isAccept} onChange={handleInputChange} required/><br />
-
 
         <h6>יצרו איתך קשר על מנת לתאם תור למיון</h6>
       </div>

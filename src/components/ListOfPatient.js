@@ -28,8 +28,7 @@ const PatientList = () => {
         setFilteredPatients(patients);
       } else {
         const filtered = patients.filter(
-          (patient) => patient.id && patient.id.toLowerCase().indexOf(searchId.toLowerCase()) !== -1
-        );
+          (patient) => patient.id && patient.id.toLowerCase().indexOf(searchId.toLowerCase()) !== -1);
         setFilteredPatients(filtered);
       }
     };
@@ -43,6 +42,7 @@ const PatientList = () => {
       const docRef = doc(db, 'tickets', id);
       await deleteDoc(docRef);
       console.log('User deleted successfully');
+      alert("מחיקת משתמש בוצעה בהצלחה")
     } catch (error) {
       console.log('Error deleting user:', error);
     }
@@ -51,6 +51,7 @@ const PatientList = () => {
   return (
     <div className="PatientList">
       <div className="search-bar">
+      <h2>רשימת מטופלים</h2>
         <input
           type="text"
           placeholder="Search by ID..."
@@ -59,32 +60,32 @@ const PatientList = () => {
         />
         {/* Add a search icon here */}
       </div>
-      <h2>רשימת מטופלים</h2>
       {filteredPatients.length > 0 ? (
         <table>
           <thead>
             <tr>
-              <th>תעודת זהות</th>
-              <th>שם מלא</th>
-              <th>שם עובד סוציאלי</th>
-              <th>מייל עובד סוציאלי</th>
-              <th>ם עמותה</th>
+              <th>פעולות</th>
               <th>סטאטוס</th>
-              <th>פעולה</th> {/* Add a column for actions */}
+              <th>שם עמותה</th>
+              <th>מייל עובד סוציאלי</th>
+              <th>שם עובד סוציאלי</th>
+              <th>שם מלא</th>
+              <th>תעודת זהות</th> {/* Add a column for actions */}
             </tr>
           </thead>
           <tbody>
           {filteredPatients.map((patient, index) => (
           <tr key={index}>
-            <td>{patient.idCard}</td>
-            <td>{patient.fullName}</td>
-            <td>{patient.socialWorker}</td>
-            <td>{patient.phoneNumber}</td>
-            <td>{patient.organization}</td>
-            <td>{patient.status}</td>
             <td>
               <button className="delete-button" onClick={() => deleteUser(patient.docId)}>מחק</button>
             </td>
+            <td>{patient.status}</td>
+            <td>{patient.organization}</td>
+            <td>{patient.phoneNumber}</td>
+            <td>{patient.socialWorker}</td>
+            <td>{patient.fullName}</td>
+            <td>{patient.idCard}</td>
+            
           </tr>
         ))}
           </tbody>

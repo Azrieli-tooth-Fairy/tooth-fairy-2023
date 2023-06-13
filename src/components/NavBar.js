@@ -92,32 +92,7 @@ function Navbar(props) {
     <nav className="navbar-top">
       <div className="navbar-nav2">
         {/* Render other navigation links */}
-        {/* <div className='navbar-link'></div> */}
-        <div className="nav-item">
-          <Link to="/" className="nav-link">
-            דף בית
-          </Link>   
-        </div>
-
-        {role === "job_owner" ? 
-        <div className="nav-item">
-          <Link to="/sign_in" className="nav-link">
-            רישום משתמש חדש
-          </Link>
-        </div> : ""} 
-         
-        {role === "job_owner" || role === "social_worker"?
-        <div className="nav-item">
-          <Link to="/Clinic_Booking_page" className="nav-link">
-          קביעת תור למרפאות
-          </Link>
-        </div>: ""} 
-        {role === "job_owner" ?
-        <div className="nav-item">
-          <Link to="/emergence_appt" className="nav-link">
-          קביעת תור למיון
-          </Link>
-        </div>: ""} 
+        {/* <div className='navbar-link'></div> */}  
         {role === "job_owner" || role === "social_worker"?
         <div className="nav-item">
           <Link to="/patient_form" className="nav-link">
@@ -171,7 +146,30 @@ function Navbar(props) {
           <Link to="/cancel_appointment" className="nav-link">
           ביטול תור
           </Link>
-        </div>: ""} 
+        </div>: ""}
+        {role === "job_owner" ?
+        <div className="nav-item">
+          <Link to="/emergence_appt" className="nav-link">
+          קביעת תור למיון
+          </Link>
+        </div>: ""}
+        {role === "job_owner" || role === "social_worker"?
+        <div className="nav-item">
+          <Link to="/Clinic_Booking_page" className="nav-link">
+          קביעת תור למרפאות
+          </Link>
+        </div>: ""}  
+        {role === "job_owner" ? 
+        <div className="nav-item">
+          <Link to="/sign_in" className="nav-link">
+            רישום משתמש חדש
+          </Link>
+        </div> : ""}
+        <div className="nav-item">
+          <Link to="/" className="nav-link">
+            דף בית
+          </Link>   
+        </div>
       </div>
     </nav>
     <NavigationGrid/>

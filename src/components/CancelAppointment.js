@@ -51,11 +51,11 @@ const CancelAppointment = () => {
 
   return (
     <div>
-      <h2>Cancel Appointment</h2>
+      <h2>ביטול תור</h2>
       <form onSubmit={handleFormSubmit}>
-        <label htmlFor="patientId">תז מטופל</label>
-        <input type="text" id="patientId" name="patientId" required />
-        <button type="submit">הצג פגישות</button>
+      <button type="submit">הצג פגישות</button>
+        <label htmlFor="patientId"></label>
+        <input type="text" id="patientId" name="patientId" placeholder="             הכנס תעודת זהות" required />
       </form>
        {/* {patientId && appointments.length === 0 && (
         alert("There is no appointments for this ID. \nMake sure the ID is true.")
@@ -64,21 +64,21 @@ const CancelAppointment = () => {
         <table className="appointment-table">
           <thead>
             <tr>
-              <th>תאריך</th>
-              <th>שעה</th>
-              <th>שם מרפאה</th>
               <th>פעולה</th>
+              <th>שעה</th>
+              <th>תאריך</th>
+              <th>שם מרפאה</th>
             </tr>
           </thead>
           <tbody>
             {appointments.map((appointment) => (
               <tr key={appointment.id}>
-                <td>{appointment.date}</td>
-                <td>{appointment.queue}</td>
-                <td>{appointment.clinic}</td>
                 <td>
                   <button onClick={() => handleCancelAppointment(appointment.id)}>ביטול פגישה</button>
                 </td>
+                <td>{appointment.queue}</td>
+                <td>{appointment.date}</td>
+                <td>{appointment.clinic}</td>
               </tr>
             ))}
           </tbody>

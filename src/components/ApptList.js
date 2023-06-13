@@ -40,13 +40,13 @@ const AppointmentsTable = () => {
       <table>
         <thead>
           <tr>
-            <th>תז</th>
-            <th>תאריך</th>
-            <th>שעה</th>
-            <th>מרפאה</th>
             <th>סיבת הפנייה</th>
             <th>מרפאה מפנה</th>
-            {/* <th>סטאטוס מטופל</th> */}
+            <th>מרפאה</th>
+            <th>שעה</th>
+            <th>תאריך</th>
+            <th>תז</th>
+
           </tr>
         </thead>
         <tbody>
@@ -54,13 +54,12 @@ const AppointmentsTable = () => {
             if (isFutureDate(appointment.date)) {
               return (
                 <tr key={index}>
-                  <td>{appointment.idCard}</td>
-                  <td>{appointment.clinic}</td>
-                  <td>{appointment.date}</td>
-                  <td>{appointment.queue}</td>
                   <td>{appointment.reason}</td>
                   <td>{appointment.referralClinic}</td>
-                  {/* <td>{patient.status}</td> */}
+                  <td>{appointment.clinic}</td>
+                  <td>{appointment.queue}</td>
+                  <td>{appointment.date}</td>
+                  <td>{appointment.idCard}</td>
                 </tr>
               );
             } else {

@@ -74,105 +74,154 @@ const handleSubmit = async (e) => {
       </select>
 
 {formData.role === "job_owner" && (
-  <form onSubmit={handleFormSubmit}>
+  <form onSubmit={handleFormSubmit} className="row g-3">
     {/* Fields for job owners */}
-    <label htmlFor="full_name">שם מלא:</label>
-    <input type="text" id="full_name" name="full_name" value={formData.full_name} onChange={handleInputChange} required/><br />
+    <div className="col-12">
+      <label htmlFor="full_name" className="form-label">שם מלא:</label>
+      <input type="text" className="form-control" id="full_name" name="full_name" value={formData.full_name} onChange={handleInputChange} required style={{ width: '150px', textAlign: 'right' }} />
+    </div>
 
-    <label htmlFor="phone_number">:מספר פלאפון</label>
-    <input type="number" id="phone_number" name="phone_number" value={formData.phone_number} onChange={handleInputChange}required/><br />
+    <div className="col-12">
+      <label htmlFor="phone_number" className="form-label">:מספר פלאפון</label>
+      <input type="number" className="form-control" id="phone_number" name="phone_number" value={formData.phone_number} onChange={handleInputChange} required style={{ width: '150px', textAlign: 'right' }} />
+    </div>
 
-    <label htmlFor="mail">:כתובת מייל</label>
-    <input type="text" id="mail" name="mail" value={formData.mail} onChange={handleInputChange} required/><br />
+    <div className="col-12">
+      <label htmlFor="mail" className="form-label">:כתובת מייל</label>
+      <input type="text" className="form-control" id="mail" name="mail" value={formData.mail} onChange={handleInputChange} required style={{ width: '150px', textAlign: 'right' }} />
+    </div>
 
-    <label htmlFor="password">:סיסמא</label>
-    <input type="password" id="password" name="password" value={formData.password} onChange={handleInputChange} required/><br />
+    <div className="col-12">
+      <label htmlFor="password" className="form-label">:סיסמא</label>
+      <input type="password" className="form-control" id="password" name="password" value={formData.password} onChange={handleInputChange} required style={{ width: '150px', textAlign: 'right' }} />
+    </div>
 
-    <label htmlFor="school_year">:שנת לימודים</label>
-    <input type="text" id="school_year" name="school_year" value={formData.school_year} onChange={handleInputChange} required/><br />
+    <div className="col-12">
+      <label htmlFor="school_year" className="form-label">:שנת לימודים</label>
+      <input type="text" className="form-control" id="school_year" name="school_year" value={formData.school_year} onChange={handleInputChange} required style={{ width: '150px', textAlign: 'right' }} />
+    </div>
 
-    <label htmlFor="job_in_fairy">:תפקיד בפייה</label>
-    <input type="text" id="job_in_fairy" name="job_in_fairy" value={formData.job_in_fairy} onChange={handleInputChange} required/><br />
+    <div className="col-12">
+      <label htmlFor="job_in_fairy" className="form-label">:תפקיד בפייה</label>
+      <input type="text" className="form-control" id="job_in_fairy" name="job_in_fairy" value={formData.job_in_fairy} onChange={handleInputChange} required style={{ width: '150px', textAlign: 'right' }} />
+    </div>
 
-    <label htmlFor="isAdmin">Is admin?</label>
-    <input type="checkbox" id="isAdmin" name="isAdmin" value={formData.isAdmin} onChange={handleInputChange} required/><br />
+    <div className="col-12">
+      <div className="form-check">
+        <input type="checkbox" className="form-check-input" id="isAdmin" name="isAdmin" value={formData.isAdmin} onChange={handleInputChange} required />
+        <label htmlFor="isAdmin" className="form-check-label">Is admin?</label>
+      </div>
+    </div>
 
-    {/* <input type="hidden" id="role" name="role" value={formData.role} onChange={handleInputChange} /> */}
-
-
-    <button type="submit">שלח</button>
+    <div className="col-12 text-center">
+      <button type="submit" className="btn btn-primary" style={{ width: '100px' }}>שלח</button>
+    </div>
   </form>
 )}
-
 
 {formData.role === "student" && (
-  <form onSubmit={handleFormSubmit}>
+  <form onSubmit={handleFormSubmit} className="row g-3">
     {/* Fields for students */}
-    <label htmlFor="full_name">:שם מלא</label>
-    <input type="text" id="full_name" name="full_name" value={formData.full_name} onChange={handleInputChange} required/><br />
+    <div className="col-12">
+      <label htmlFor="full_name" className="form-label">:שם מלא</label>
+      <input type="text" className="form-control" id="full_name" name="full_name" value={formData.full_name} onChange={handleInputChange} required style={{ width: '150px', textAlign: 'right' }} />
+    </div>
 
-    <label htmlFor="phone_number">:מספר פלאפון</label>
-    <input type="text" id="phone_number" name="phone_number" value={formData.phone_number} onChange={handleInputChange} required/><br />
+    <div className="col-12">
+      <label htmlFor="phone_number" className="form-label">:מספר פלאפון</label>
+      <input type="text" className="form-control" id="phone_number" name="phone_number" value={formData.phone_number} onChange={handleInputChange} required style={{ width: '150px', textAlign: 'right' }} />
+    </div>
 
-    <label htmlFor="mail">:כתובת מייל</label>
-    <input type="text" id="mail" name="mail" value={formData.mail} onChange={handleInputChange} required/><br />
+    <div className="col-12">
+      <label htmlFor="mail" className="form-label">:כתובת מייל</label>
+      <input type="text" className="form-control" id="mail" name="mail" value={formData.mail} onChange={handleInputChange} required style={{ width: '150px', textAlign: 'right' }} />
+    </div>
 
-    <label htmlFor="password">:סיסמא</label>
-    <input type="password" id="password" name="password" value={formData.password} onChange={handleInputChange} required/><br />
+    <div className="col-12">
+      <label htmlFor="password" className="form-label">:סיסמא</label>
+      <input type="password" className="form-control" id="password" name="password" value={formData.password} onChange={handleInputChange} required style={{ width: '150px', textAlign: 'right' }} />
+    </div>
 
-    <label htmlFor="school_year">:שנת לימודים</label>
-    <input type="text" id="school_year" name="school_year" value={formData.school_year} onChange={handleInputChange} required/><br />
+    <div className="col-12">
+      <label htmlFor="school_year" className="form-label">:שנת לימודים</label>
+      <input type="text" className="form-control" id="school_year" name="school_year" value={formData.school_year} onChange={handleInputChange} required style={{ width: '150px', textAlign: 'right' }} />
+    </div>
 
-    <button type="submit">שלח</button>
+    <div className="col-12 text-center">
+      <button type="submit" className="btn btn-primary" style={{ width: '100px' }}>שלח</button>
+    </div>
   </form>
 )}
 
-
 {formData.role === "doctor" && (
-  <form onSubmit={handleFormSubmit}>
-    {/* Fields for doctors */}
-    <label htmlFor="full_name">:שם מלא</label>
-    <input type="text" id="full_name" name="full_name" value={formData.full_name} onChange={handleInputChange} required/><br />
+  <form className="row g-3" onSubmit={handleFormSubmit}>
+    <div className="col-12">
+      <label htmlFor="full_name" className="form-label">:שם מלא</label>
+      <input type="text" className="form-control form-control-sm" id="full_name" name="full_name" value={formData.full_name} onChange={handleInputChange} required style={{ width: '150px', textAlign: 'right' }} />
+    </div>
 
-    <label htmlFor="phone_number">:מספר פלאפון</label>
-    <input type="text" id="phone_number" name="phone_number" value={formData.phone_number} onChange={handleInputChange} required/><br />
+    <div className="col-12">
+      <label htmlFor="phone_number" className="form-label">:מספר פלאפון</label>
+      <input type="tel" className="form-control form-control-sm" id="phone_number" name="phone_number" value={formData.phone_number} onChange={handleInputChange} required style={{ width: '150px', textAlign: 'right' }} />
+    </div>
 
-    <label htmlFor="mail_address">:כתובת מייל</label>
-    <input type="text" id="mail" name="mail" value={formData.mail} onChange={handleInputChange} required/><br />
+    <div className="col-12">
+      <label htmlFor="mail_address" className="form-label">:כתובת מייל</label>
+      <input type="text" className="form-control form-control-sm" id="mail" name="mail" value={formData.mail} onChange={handleInputChange} required style={{ width: '150px', textAlign: 'right' }} />
+    </div>
 
-    <label htmlFor="password">:סיסמא</label>
-    <input type="password" id="password" name="password" value={formData.password} onChange={handleInputChange} required/><br />
+    <div className="col-12">
+      <label htmlFor="password" className="form-label">:סיסמא</label>
+      <input type="password" className="form-control form-control-sm" id="password" name="password" value={formData.password} onChange={handleInputChange} required style={{ width: '150px', textAlign: 'right' }} />
+    </div>
 
-
-    <button type="submit">שלח</button>
+    <div className="col-12 text-center">
+      <button type="submit" className="btn btn-primary" style={{ width: '100px' }}>שלח</button>
+    </div>
   </form>
 )}
 
 
 {formData.role === "social_worker" && (
-  <form onSubmit={handleFormSubmit}>
+  <form onSubmit={handleFormSubmit} className="row g-3">
     {/* Fields for social workers */}
-    <label htmlFor="full_name">:שם מלא</label>
-    <input type="text" id="full_name" name="full_name" value={formData.full_name} onChange={handleInputChange} required/><br />
+    <div className="col-12">
+      <label htmlFor="full_name" className="form-label">:שם מלא</label>
+      <input type="text" className="form-control" id="full_name" name="full_name" value={formData.full_name} onChange={handleInputChange} required style={{ width: '150px', textAlign: 'right' }} />
+    </div>
 
-    <label htmlFor="organization_Name">:שם עמותה</label>
-    <input type="text" id="organization_Name" name="organization_Name" value={formData.organization_Name} onChange={handleInputChange} required/><br />
+    <div className="col-12">
+      <label htmlFor="organization_Name" className="form-label">:שם עמותה</label>
+      <input type="text" className="form-control" id="organization_Name" name="organization_Name" value={formData.organization_Name} onChange={handleInputChange} required style={{ width: '150px', textAlign: 'right' }} />
+    </div>
 
-    <label htmlFor="newOrganization">סמן אם זו עמותה חדשה</label>
-    <input type="checkbox" id="newOrganization" name="newOrganization" value={formData.new_organization} onChange={handleInputChange} /><br />
+    <div className="col-12">
+      <div className="form-check">
+        <input type="checkbox" className="form-check-input" id="newOrganization" name="newOrganization" value={formData.new_organization} onChange={handleInputChange} />
+        <label htmlFor="newOrganization" className="form-check-label">סמן אם זו עמותה חדשה</label>
+      </div>
+    </div>
 
-    <label htmlFor="phone_number">:מספר פלאפון</label>
-    <input type="text" id="phone_number" name="phone_number" value={formData.phone_number} onChange={handleInputChange} required/><br />
+    <div className="col-12">
+      <label htmlFor="phone_number" className="form-label">:מספר פלאפון</label>
+      <input type="tel" className="form-control" id="phone_number" name="phone_number" value={formData.phone_number} onChange={handleInputChange} required style={{ width: '150px', textAlign: 'right' }} />
+    </div>
 
-    <label htmlFor="mail_address">:כתובת מייל</label>
-    <input type="text" id="mail" name="mail" value={formData.mail} onChange={handleInputChange} required/><br />
+    <div className="col-12">
+      <label htmlFor="mail_address" className="form-label">:כתובת מייל</label>
+      <input type="email" className="form-control" id="mail" name="mail" value={formData.mail} onChange={handleInputChange} required style={{ width: '150px', textAlign: 'right' }} />
+    </div>
 
-    <label htmlFor="password">:סיסמא</label>
-    <input type="password" id="password" name="password" value={formData.password} onChange={handleInputChange} required/><br />
-    
+    <div className="col-12">
+      <label htmlFor="password" className="form-label">:סיסמא</label>
+      <input type="password" className="form-control" id="password" name="password" value={formData.password} onChange={handleInputChange} required style={{ width: '150px', textAlign: 'right' }} />
+    </div>
+
     <input type="hidden" id="role" name="role" value={formData.role} onChange={handleInputChange} />
 
-    <button type="submit">שלח</button>
+    <div className="col-12 text-center">
+      <button type="submit" className="btn btn-primary" style={{ width: '100px' }}>שלח</button>
+    </div>
   </form>
 )}
 

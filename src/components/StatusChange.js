@@ -57,7 +57,7 @@ const StatusChange = () => {
       {ticketData && (
         <div className="ticket-data">
           <h3>שינוי סטאטוס מטופל</h3>
-          <p>{ticketData.status} - סטאטוס נוכחי </p> {/* Display the current status */}
+          <p>{ticketData.status} - סטאטוס נוכחי </p> 
           <div>
             <label htmlFor="status">סטאטוס</label>
             <select id="status" value={status} onChange={handleChange}>
@@ -69,10 +69,11 @@ const StatusChange = () => {
               <option value="intern_care">מטופל אצל מתמחה</option>
               <option value="student_care">מטופל אצל סטונדט</option>
             </select>
-            <button onClick={handleStatusChange}>שינוי סטאטוס</button> {/* Add onClick event */}
+            <button onClick={handleStatusChange}>שינוי סטאטוס</button> 
           </div>
         </div>
       )}
+      
       {!ticketData && searchId && <p>לא נמצאו מטופלים. אנא בדוק את מספר תעודת הזהות ונסה שנית</p>}
     </div>
   );

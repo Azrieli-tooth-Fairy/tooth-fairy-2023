@@ -57,19 +57,20 @@ const UserList = () => {
         <table>
           <thead>
             <tr>
-              <th>שם מלא</th>
+              <th>פעולות</th>
               <th>תפקיד</th>
-              <th>פעולות</th> {/* Add a column for actions */}
+              <th>שם מלא</th> {/* Add a column for actions */}
             </tr>
           </thead>
           <tbody>
           {filteredUsers.map((user, index) => (
           <tr key={index}>
-            <td>{user.full_name}</td>
-            <td>{user.role}</td>
             <td>
               <button className="delete-button" onClick={() => deleteUser(user.docId)}>מחק משתמש</button>
             </td>
+            <td>{user.role}</td>
+            <td>{user.full_name}</td>
+            
           </tr>
         ))}
           </tbody>

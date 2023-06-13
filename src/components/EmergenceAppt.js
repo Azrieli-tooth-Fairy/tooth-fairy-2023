@@ -77,6 +77,10 @@
       await addDoc(ticketsCollectionRef, formData);
     // Reset the form fields
     sendMailEmergency(e);
+    if (formData.social_worker_number.length !== 10){
+      alert("The number must be exactly 10 digits.");
+      return;
+    }
     console.log('Ticket submitted successfully!');
     alert("appointment submitted successfully!")
   } catch (error) {
@@ -90,10 +94,10 @@
           <input type="number" id="idCard" required value={formData.idCard} onChange={handleInputChange}/>
 
           <label htmlFor="social_worker_name">:שם עובד סוציאלי</label>
-          <input type="text" id="social_worker_name" required value={formData.social_worker_name} onChange={handleInputChange}/>
+          <input type="text" id="social_worker_name" required  style={{ width: '150px', textAlign: 'right' }} value={formData.social_worker_name} onChange={handleInputChange}/>
 
           <label htmlFor="social_worker_number">:מס' פלאפון של עובד סוציאלי</label>
-          <input type="number" id="social_worker_number" required value={formData.social_worker_number} onChange={handleInputChange}/>
+          <input type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" id="social_worker_number" required value={formData.social_worker_number} onChange={handleInputChange}/>
 
           <label htmlFor="social_worker_mail">:מייל של עובד סוציאלי</label>
           <input type="mail" id="social_worker_mail" required value={formData.social_worker_mail} onChange={handleInputChange}/>
@@ -143,7 +147,7 @@
               required
             />
             :אחר
-            <input type="text" value={formData.referral_clinic} onChange={(e) =>handleSelection(e)} required/>
+            <input type="text" value={formData.referral_clinic}  style={{ width: '150px', textAlign: 'right' }}  onChange={(e) =>handleSelection(e)} required/>
           </label>
         </div>
       );

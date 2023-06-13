@@ -61,13 +61,31 @@ const CancelSundayClinic = () => {
     return `${year}-${month}-${day}`;
   };
 
+  // return (
+  //   <div>
+  //     <h2>ביטול מרפאת יום ראשון</h2>
+  //     <form onSubmit={handleSubmit}>
+  //       <select id="date" value={selectedDate} onChange={handleDateChange} required>
+  //         <option value="">בחר יום ראשון</option>
+  //         {/* Render options for the next 6 Sundays */}
+  //         {renderNextSixSundays().map((sunday) => (
+  //           <option key={sunday} value={sunday} disabled={cancelDates.includes(sunday)}>
+  //             {sunday}
+  //           </option>
+  //         ))}
+  //       </select>
+  //       {/* <label htmlFor="date">בחר יום ראשון </label> */}
+  //       <br/>
+  //       <button type="submit"  style={{ textAlign: 'right' }} >     שלח</button>
+  //     </form>
+  //   </div>
+  // );
   return (
     <div>
       <h2>ביטול מרפאת יום ראשון</h2>
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="date">בחר יום ראשון </label>
-        <select id="date" value={selectedDate} onChange={handleDateChange} required>
-          <option value="">-- Select Date --</option>
+      <form onSubmit={handleSubmit} className="d-flex flex-column align-items-center">
+        <select id="date" value={selectedDate} onChange={handleDateChange} required className="form-select mb-3">
+          <option value="">בחר יום ראשון</option>
           {/* Render options for the next 6 Sundays */}
           {renderNextSixSundays().map((sunday) => (
             <option key={sunday} value={sunday} disabled={cancelDates.includes(sunday)}>
@@ -75,10 +93,11 @@ const CancelSundayClinic = () => {
             </option>
           ))}
         </select>
-        <button type="submit">שלח</button>
+        <button type="submit" className="btn btn-primary">שלח</button>
       </form>
     </div>
   );
+  
 };
 
 export default CancelSundayClinic;

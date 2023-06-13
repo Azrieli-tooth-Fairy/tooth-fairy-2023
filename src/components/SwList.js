@@ -31,21 +31,21 @@ const SwList = () => {
 
   return (
     <div>
-      <h2>Social Workers</h2>
+      <h2>רשימת עמותות</h2>
       <table>
         <thead>
           <tr>
-            <th>שם מלא</th>
-            <th>מספר פלאפון</th>
             <th>שם עמותה</th>
+            <th>מספר פלאפון</th>
+            <th>שם מלא</th>
           </tr>
         </thead>
         <tbody>
           {socialWorkers.map((socialWorker, index) => (
             <tr key={index}>
-              <td>{socialWorker.full_name}</td>
-              <td>{socialWorker.phone_number}</td>
               <td>{socialWorker.organization_Name}</td>
+              <td>{socialWorker.phone_number}</td>
+              <td>{socialWorker.full_name}</td>
             </tr>
           ))}
         </tbody>

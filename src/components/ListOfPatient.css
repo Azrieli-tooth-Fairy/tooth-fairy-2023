@@ -1,4 +1,4 @@
-/* ListOfPatient.css */
+/* ListOfPatient.css
 
 .PatientList {
   margin: 20px;
@@ -54,7 +54,6 @@
   margin-top: 10px;
 }
 
-/* Add the following CSS for the delete button */
 .PatientList button.delete-button {
   background-color: red;
   color: white;
@@ -62,4 +61,172 @@
   border: none;
   border-radius: 4px;
   cursor: pointer;
+} */
+/* ListOfPatient.css */
+
+.PatientList {
+  margin: 20px;
+}
+
+.PatientList h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.search-bar input {
+  width: 200px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-right: 10px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.PatientList table {
+  width: 100%;
+  border-collapse: collapse;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  animation: table-fade-in 1s ease-in-out;
+}
+
+@keyframes table-fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.PatientList th,
+.PatientList td {
+  padding: 12px;
+  border-bottom: 1px solid #ccc;
+  text-align: left;
+}
+
+.PatientList th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+  animation: th-highlight 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes th-highlight {
+  0% {
+    background-color: #f2f2f2;
+  }
+  100% {
+    background-color: #f9f9f9;
+  }
+}
+
+.PatientList tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.PatientList tbody tr:hover {
+  background-color: #f5f5f5;
+  transform: scale(1.02);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.PatientList p {
+  font-style: italic;
+  margin-top: 10px;
+  animation: text-fade-in 1s ease-in-out;
+}
+
+@keyframes text-fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.PatientList button.delete-button {
+  background-color: red;
+  color: white;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+  animation: button-pulse 1s ease-in-out infinite alternate;
+}
+
+@keyframes button-pulse {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.1);
+  }
+}
+
+.PatientList button.delete-button:hover {
+  background-color: #ff0000;
+}
+
+.ticket-data {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-top: 10px;
+  animation: ticket-bounce 0.5s ease-in-out;
+}
+
+@keyframes ticket-bounce {
+  0% {
+    transform: translateY(-10px);
+  }
+  50% {
+    transform: translateY(10px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+input {
+  margin-right: 10px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+button {
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s ease-in-out;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+label {
+  margin-right: 5px;
+  font-weight: bold;
+}
+
+select {
+  padding: 5px;
+  margin-right: 10px;
+  border-radius: 4px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
 }
