@@ -30,7 +30,7 @@ const StatusChange = () => {
         const ticketRef = doc(db, 'tickets', ticketData.docId);
         await updateDoc(ticketRef, { "status":status });
         setTicketData({ ...ticketData, "status":status });
-        alert('Status changed successfully');
+        alert(' סטאטוס שונה בהצלחה');
       } catch (error) {
         console.log('Error updating status:', error);
         alert('An error occurred while updating the status. Please try again later.');
@@ -44,7 +44,8 @@ const StatusChange = () => {
 
   return (
     <div>
-      <h2>שינוי סטאטוס</h2>
+      <h1>שינוי סטאטוס</h1>
+      <p></p>
       <div>
         <input
           type="text"

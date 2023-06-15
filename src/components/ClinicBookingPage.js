@@ -1,5 +1,5 @@
 import React, { useState , useEffect } from 'react';
-import { doc, getDocs , collection, addDoc , onSnapshot, query , updateDoc} from 'firebase/firestore';
+import { doc, getDocs , collection, addDoc , onSnapshot, query , updateDoc , where} from 'firebase/firestore';
 import { db , fetchDocumentByFieldValue} from '../firebase'; // Import the Auth and Firestore instances from firebase.js
 import emailjs from 'emailjs-com';
 
@@ -27,21 +27,7 @@ const ClinicBookingPage = () => {
     setFormData({ ...formData, [event.target.name]: event.target.value });
   }
 
-  // // Helper function to generate Sunday dates
-  // const generateSundayDates = () => {
-  //   const dates = [];
-  //   const currentDate = new Date();
-  //   const daysUntilSunday = (7 - currentDate.getDay()) % 7;
-  //   currentDate.setDate(currentDate.getDate() + daysUntilSunday);
-
-  //   for (let i = 0; i < 4; i++) {
-  //     const date = new Date(currentDate);
-  //     date.setDate(date.getDate() + i * 7);
-  //     dates.push(date.toISOString().split('T')[0]);
-  //   }
-
-  //   return dates;
-  // };
+ 
   const generateSundayDates = () => {
     const dates = [];
     const currentDate = new Date();
@@ -55,7 +41,7 @@ const ClinicBookingPage = () => {
       const dayOfMonth = date.getDate().toString().padStart(2, '0');
       const month = (date.getMonth() + 1).toString().padStart(2, '0');
       const year = date.getFullYear().toString();
-      const formattedDate = `${dayOfMonth}/${month}/${year}`;
+      const formattedDate = `${dayOfMonth}-${month}-${year}`;
       
       dates.push(formattedDate);
     }
@@ -78,8 +64,8 @@ const generateFirstAidDates = () => {
       const dayOfMonth = date.getDate().toString().padStart(2, '0');
       const month = (date.getMonth() + 1).toString().padStart(2, '0');
       const year = date.getFullYear().toString();
-      const formattedDate = `${dayOfMonth}/${month}/${year}`;
-      
+      const formattedDate = `${dayOfMonth}-${month}-${year}`;
+      // const formattedDate = `${year}-${month}-${dayOfMonth}`;
       dates.push(formattedDate);
       i++; // Increment i only if a valid date is added
     }
@@ -90,7 +76,6 @@ const generateFirstAidDates = () => {
   return dates;
 };
 
-
 //--------------------------------------------========-----EMAILJS - here were gonna send the admin the needed appointment
   const sendMailEmergency = (e) => {
     e.preventDefault();
@@ -99,25 +84,26 @@ const generateFirstAidDates = () => {
     const templateID = "template_avh8gs5";
     // const templateID = "template_jhtva3r"; // for test
     var params = {
-        id: formData.id,
+        idCard: formData.idCard,
+        name: formData.fullName,
         social_worker_name: formData.social_worker_name,
         social_worker_number: formData.social_worker_number,
         social_worker_mail: formData.social_worker_mail,
         referral_clinic: formData.referralClinic,
-        referral_reason: formData.referral_reason,
+        reason: formData.reason,
 
       };
 
     emailjs
         .send(serviceID, templateID, params,"IY_q-mRXPfxKZKMHs") // need to hide this key!
         .then((res)=> {
-            alert("הודעתך נשלחה בהצלחה");
+            //alert(" הודעתך נשלחה בהצלחה");
         })
   }
-// here we need to send mail to admin that the user sign in to firstAid clinic
   
 const [formData, setFormData] = useState({
   idCard: "",
+  fullName: "",
   date: "",
   queue: "",
   clinic: "",
@@ -219,45 +205,104 @@ const handleInputChange = (event) => {
 };
 
 
+//just in case we have a problem with the new code below
+// const handleSubmit = async (e) => {
+//   e.preventDefault();
+//   // Create a new document in the "tickets" collection with the form data
+//   try {
+//     const appointmentsCollectionRef = collection(db, 'appointments');
+//     await addDoc(appointmentsCollectionRef, formData);
+//     // const ticketsCollectionRef = collection(db, 'tickets'); //here were going to update status
+//     const ticket = await fetchDocumentByFieldValue("tickets", "idCard", formData.idCard);
+//     if (formData.idCard.length !== 9) {
+//       alert("The ID card number must be exactly 9 digits.");
+//       return;
+//     }
+//     if (formData.social_worker_number.length !== 10){
+//       alert("The number must be exactly 10 digits.");
+//       return;
+//     }
+//     if (formData.social_worker_number[0] !== "0" || formData.social_worker_number[1] !== "5"){
+//       alert("The phone number must be valid!\nfor example (054-123-1234)");
+//       return;
+//     }
+//     //here were going to check if this user status is general or not. if not - he cant sign to sunday clinic
+//     if(ticket.status){
+//       if (ticket.status !== "general" && formData.clinic === "sunday") {
+//         alert("Patient status is not general, he can't sign in to sunday clinic");
+//       }
+//     }
+//     else {
+//       await updateDoc(doc(db, 'tickets', ticket.docId), {"status": formData.clinic});
+//       // Reset the form fields
+//       console.log('Ticket submitted successfully!');
+
+//       if(formData.clinic === 'emergency_wait'){
+//         sendMailEmergency(e);
+//       }
+//       else if(formData.clinic === 'firstAid'){
+//         //sendMailFirstAid(e);
+//       }
+//     }
+//   } catch (error) {
+//     console.error('Error submitting ticket:', error);
+//   }
+// };
 
 const handleSubmit = async (e) => {
   e.preventDefault();
-  // Create a new document in the "tickets" collection with the form data
+
+  // Check if the given ID exists in the "tickets" collection
+  const existingPatientQuery = query(
+    collection(db, 'tickets'),
+    where('idCard', '==', formData.idCard)
+  );
+  const existingPatientSnapshot = await getDocs(existingPatientQuery);
+  
+  if (existingPatientSnapshot.empty) {
+    console.log('Patient does not exist!');
+    alert('מטופל עם מספר תעודת הזהות הזה אינו קיים במערכת!');
+    return;
+  }
   try {
     const appointmentsCollectionRef = collection(db, 'appointments');
     await addDoc(appointmentsCollectionRef, formData);
-    // const ticketsCollectionRef = collection(db, 'tickets'); //here were going to update status
+
     const ticket = await fetchDocumentByFieldValue("tickets", "idCard", formData.idCard);
-    if (formData.idCard.length !== 9) {
-      alert("The ID card number must be exactly 9 digits.");
+    
+    if (formData.idCard && formData.idCard.length !== 9) {
+      alert("מספר תעודת הזהות צריך להיות בדיוק 9 ספרות");
       return;
     }
-    if (formData.social_worker_number.length !== 10){
-      alert("The number must be exactly 10 digits.");
+    if (formData.social_worker_number && formData.social_worker_number.length !== 10){
+      if (formData.social_worker_number[0] !== "0" || formData.social_worker_number[1] !== "5"){
+        alert("מספר הפלאפון צריך להיות זמין.\n לדוגמא (054-123-1324)");
+        return;
+      }
+      alert("מספר הפלאפון צריך להיות 10 ספרות");
       return;
     }
-    //here were going to check if this user status is general or not. if not - he cant sign to sunday clinic
+    
     if(ticket.status){
       if (ticket.status !== "general" && formData.clinic === "sunday") {
-        alert("Patient status is not general, he can't sign in to sunday clinic");
-      }
+        alert("ניתן להרשם למרפאת יום א' רק כשהמטופל בסטאטוס כללי");
+        return;
+      } 
     }
-    else {
     await updateDoc(doc(db, 'tickets', ticket.docId), {"status": formData.clinic});
-    // Reset the form fields
-    console.log('Ticket submitted successfully!');
-
-    if(formData.clinic === 'emergency_wait'){
+    if (formData.clinic === 'emergency_wait') {
       sendMailEmergency(e);
+      alert("בקשתך בוצעה בהצלחה.\n במידה והתור יאושר, תקבל מייל עם פרטי התור")
+    } else {
+      alert("בקשה בוצעה בהצלחה!")
     }
-    else if(formData.clinic === 'firstAid'){
-      //sendMailFirstAid(e);
-    }
-  }
+    console.log('Ticket submitted successfully!');
   } catch (error) {
     console.error('Error submitting ticket:', error);
+    alert("חובה לפתוח כרטיס למטופל לפני קביעת תור למרפאה")
   }
 };
+
 
   let content = null;
 
@@ -311,53 +356,27 @@ const handleSubmit = async (e) => {
                 15:00
               </option>
             </select>
-            <label htmlFor="isAccept">אני מאשר/ת כי המטופל/ת עליו/ה הזנתי את הפרטים לעיל נשלח/ת ל"פיית השיניים" מטעם העמותה ו/או הארגון שצוינו לעיל.</label>
+            <label htmlFor="isAccept">"אני מאשר/ת כי המטופל/ת עליו/ה הזנתי את הפרטים לעיל נשלח/ת ל"פיית השיניים</label>
+            <label htmlFor="isAccept">מטעם העמותה ו/או הארגון שצוינו לעיל</label>
             <input type="checkbox" id="isAccept" name="isAccept" value={formData.isAccept} onChange={handleInputChange} required/><br />
-
           </div>
         )}
 
         {formData.queue && (
           <div>
             <h3>התור שנבחר</h3>
-            <p>:תאריך {formData.date}</p>
-            <p>:שעה {formData.queue}</p>
+            <p>{formData.date} :תאריך </p>
+            <p>{formData.queue} :שעה </p>
           </div>
         )}
       </div>
     );
   } else if (formData.clinic === 'firstAid') {
     const firstAidDates = generateFirstAidDates();
-    // content = (
-    //   <div>
-    //     <label htmlFor="idCard">:מספר תעודת זהות</label>
-    //     <input type="number" id="idCard" name='idCard' value={formData.idCard}
-    //       onChange={handleInputChange}  required/>
-
-    //     <h4>:בחר תאריך</h4>
-    //     {firstAidDates.map((date) => (
-    //       <button name="date" key={date} value={date} onClick={(e) => handleSelection(e)}>
-    //         {date}
-    //       </button>
-    //     ))}
-
-    //     <label htmlFor="isAccept">אני מאשר/ת כי המטופל/ת עליו/ה הזנתי את הפרטים לעיל נשלח/ת ל"פיית השיניים" מטעם העמותה או הארגון שצוינו לעיל.</label>
-    //     <input type="checkbox" id="isAccept" name="isAccept" value={formData.isAccept} onChange={handleInputChange} required/><br />
-
-    //     {formData.date && (
-    //       <div>
-    //         <h3>התור שנבחר</h3>
-    //         <p> {formData.date} :תאריך</p>
-    //         <p>שעה: 8:30</p>
-    //       </div>
-    //     )}
-    //   </div>
-    // );
     content = (
       <div>
         <label htmlFor="idCard">:מספר תעודת זהות</label>
         <input type="number" id="idCard" name='idCard' value={formData.idCard} onChange={handleInputChange} required />
-    
         <h4>:בחר תאריך</h4>
         <select id="date" name="date" value={formData.date} onChange={handleInputChange} required>
           <option value="">בחר תאריך</option>
@@ -367,11 +386,10 @@ const handleSubmit = async (e) => {
             </option>
           ))}
         </select>
-    
-        <label htmlFor="isAccept">
-          אני מאשר/ת כי המטופל/ת עליו/ה הזנתי את הפרטים לעיל נשלח/ת ל"פיית השיניים" מטעם העמותה או הארגון שצוינו לעיל.
-        </label>
-        <input type="checkbox" id="isAccept" name="isAccept" value={formData.isAccept} onChange={handleInputChange} required /><br />
+        
+        <label htmlFor="isAccept">"אני מאשר/ת כי המטופל/ת עליו/ה הזנתי את הפרטים לעיל נשלח/ת ל"פיית השיניים</label>
+        <label htmlFor="isAccept">מטעם העמותה ו/או הארגון שצוינו לעיל</label>
+        <input type="checkbox" id="isAccept" name="isAccept" value={formData.isAccept} onChange={handleInputChange} required/><br />
     
         {formData.date && (
           <div>
@@ -390,66 +408,32 @@ const handleSubmit = async (e) => {
         <input type="number" id="idCard" value={formData.idCard} name='idCard' onChange={handleInputChange} required/>
 
         <label htmlFor="fullName">:שם מלא</label>
-        <input type="text" id="fullName" value={formData.fullName} name='fullName' onChange={handleInputChange} required/>
+        <input type="text" id="fullName" value={formData.fullName} name='fullName' onChange={handleInputChange} required style={{direction: 'rtl'}}/>
 
         <label htmlFor="birthDate">:תאריך לידה</label>
         <input type="date" id="birthDate" value={formData.birthDate} name='birthDate' onChange={handleInputChange} required/>
 
         <label htmlFor="organizationName">:שם עמותה</label>
-        <input type="text" id="organizationName"value={formData.organizationName} name='organizationName' onChange={handleInputChange}  required/>
+        <input type="text" id="organizationName"value={formData.organizationName} name='organizationName' onChange={handleInputChange} style={{direction: 'rtl'}} required/>
 
         <label htmlFor="social_worker_name">:שם עובד סוציאלי</label>
-        <input type="text" id="social_worker_name" value={formData.social_worker_name} name='social_worker_name' onChange={handleInputChange} required/>
+        <input type="text" id="social_worker_name" value={formData.social_worker_name} name='social_worker_name' onChange={handleInputChange} required style={{direction: 'rtl'}}/>
 
         <label htmlFor="social_worker_number">:מס' פלאפון של עובד סוציאלי</label>
-        <input type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" id="social_worker_number" value={formData.social_worker_number} name='social_worker_number' onChange={handleInputChange}  required/>
+        <input type="number" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" id="social_worker_number" value={formData.social_worker_number} name='social_worker_number' onChange={handleInputChange}  required/>
 
         <label htmlFor="social_worker_mail">:מייל של עובד סוציאלי</label>
-        <input type="mail" id="social_worker_mail" value={formData.social_worker_mail} name='social_worker_mail' onChange={handleInputChange} required/>
+        <input type="text" id="social_worker_mail" value={formData.social_worker_mail} name='social_worker_mail' onChange={handleInputChange} required/>
 
-        <h4>:סיבת הפנייה</h4>
-        <textarea name='reason' value={formData.reason} id = "referral_reason" onChange={(e) => handleSelection(e)} required/>
+        <label htmlFor='reason'>:סיבת הפנייה</label>
+        <textarea type="text" name='reason' value={formData.reason} id = "reason" onChange={(e) => handleSelection(e)} required style={{direction: 'rtl'}}/>
 
-        <h4>:מרפאה מפנה</h4>
-        <label>
-          <input
-            type="radio"
-            name="referralClinic"
-            value="sundayClinic"
-            checked={referralClinic === 'sundayClinic'}
-            onChange={(e) =>handleSelection(e)}
-            id = "referral_clinic"
-            required
-          />
-          מרפאת יום א
-        </label>
-        <label>
-          <input
-            type="radio"
-            name="referralClinic"
-            value="firstAidClinic"
-            checked={referralClinic === 'firstAidClinic'}
-            onChange={(e) =>handleSelection(e)}
-            id = "referral_clinic"
-            required
-          />
-          מרפאת עזרה ראשונה
-        </label>
-        <label>
-          <input
-            type="radio"
-            name="referralClinic"
-            value="other"
-            checked={referralClinic === 'other'}
-            onChange={(e) =>handleSelection(e)}
-            id = "referral_clinic"
-            required
-          />
-          :אחר
-          <input type="text" value={referralClinic} onChange={(e) =>handleSelection(e)} required/>
-        </label>
+        <label htmlFor='referral_clinic'>:מרפאה מפנה</label>
+        <input type="text" name='referralClinic' id ='referralClinic' value={formData.referralClinic} onChange={(e) =>handleSelection(e)} required style={{direction: 'rtl'}}/>
 
-        <label htmlFor="isAccept">אני מאשר/ת כי המטופל/ת עליו/ה הזנתי את הפרטים לעיל נשלח/ת ל"פיית השיניים" מטעם העמותה ו/או הארגון שצוינו לעיל.</label>
+
+        <label htmlFor="isAccept">"אני מאשר/ת כי המטופל/ת עליו/ה הזנתי את הפרטים לעיל נשלח/ת ל"פיית השיניים</label>
+        <label htmlFor="isAccept">מטעם העמותה ו/או הארגון שצוינו לעיל</label>
         <input type="checkbox" id="isAccept" name="isAccept" value={formData.isAccept} onChange={handleInputChange} required/><br />
 
         <h6>יצרו איתך קשר על מנת לתאם תור למיון</h6>
@@ -459,14 +443,15 @@ const handleSubmit = async (e) => {
 
   return (
     <div>
-      <h2>קביעת תור למרפאה</h2>
+      <h1>קביעת תור למרפאה</h1>
+      <br></br>
       <select value={formData.clinic} onChange={handleClinicChange}>
         <option value="">אנא בחר מרפאה</option>
         <option value="sunday" >מרפאת יום א</option>
         <option value="firstAid">מרפאת עזרה ראשונה</option>
-        <option value="emergency_wait">מרפאת מיון</option>
+        <option value="emergency_wait" >בקשה למרפאת מיון</option>
       </select>
-      <h1>{formData.clinic}</h1>
+      {/* <h1>{formData.clinic}</h1> */}
       {content}
       
       {formData.clinic && (

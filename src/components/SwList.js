@@ -31,7 +31,8 @@ const SwList = () => {
 
   return (
     <div>
-      <h2>רשימת עמותות</h2>
+      <h1>רשימת עמותות</h1>
+      <p></p>
       <table>
         <thead>
           <tr>

@@ -43,7 +43,7 @@ const UserList = () => {
       const docRef = doc(db, 'users', id);
       await deleteDoc(docRef);
       console.log('User deleted successfully');
-      alert("User deleted successfully");
+      alert("משתמש נמחק בהצלחה");
     } catch (error) {
       console.log('Error deleting user:', error);
     }
@@ -52,14 +52,17 @@ const UserList = () => {
   return (
     <div className="UsersList">
       {/*  */}
-      <h2>רשימת משתמשים</h2>
+      <h1>רשימת משתמשים</h1>
+      <p></p>
+      {/* {if(filteredUsers.role )} */}
       {filteredUsers.length > 0 ? (
+        
         <table>
           <thead>
             <tr>
               <th>פעולות</th>
               <th>תפקיד</th>
-              <th>שם מלא</th> {/* Add a column for actions */}
+              <th>שם מלא</th> 
             </tr>
           </thead>
           <tbody>

@@ -1,10 +1,10 @@
   import React, { useState } from 'react';
-  import { collection, addDoc } from 'firebase/firestore';
-  import { db } from '../firebase'; // Import the Auth and Firestore instances from firebase.js
+  import { collection, addDoc, doc, updateDoc } from 'firebase/firestore';
+  import { db , fetchDocumentByFieldValue } from '../firebase'; // Import the Auth and Firestore instances from firebase.js
   import emailjs from 'emailjs-com';
+  import './EmergenceAppt.css'
 
   const ClinicBookingPage = () => {
-
     function handleSelection(event) {
       setFormData({ ...formData, [event.target.name]: event.target.value });
     }
@@ -23,16 +23,17 @@
         day = `0${day}`;
       }
   
-      return `${year}-${month}-${day}`;
+      return `${day}-${month}-${year}`;
     };
     
   const [formData, setFormData] = useState({
     idCard: "",
+    fullName: "",
     date: getCurrentDate(),
     queue: "",
     clinic: "emergency",
     reason: "",
-    referralClinic: "",
+    // referralClinic: "",
     referral_clinic: "",
     social_worker_name: "",
     social_worker_mail: "",
@@ -47,7 +48,8 @@
     const templateID = "template_jhtva3r";
     // const templateID = "template_jhtva3r"; // for test
     var params = {
-        idCard: formData.id,
+        idCard: formData.idCard,
+        fullName: formData.fullName,
         social_worker_name: formData.social_worker_name,
         social_worker_mail: formData.social_worker_mail,
         date: formData.date,
@@ -75,16 +77,27 @@
   try {
       const ticketsCollectionRef = collection(db, 'appointments');
       await addDoc(ticketsCollectionRef, formData);
-    // Reset the form fields
-    sendMailEmergency(e);
-    if (formData.social_worker_number.length !== 10){
-      alert("The number must be exactly 10 digits.");
-      return;
-    }
-    console.log('Ticket submitted successfully!');
-    alert("appointment submitted successfully!")
+      const ticket = await fetchDocumentByFieldValue("tickets", "idCard", formData.idCard);
+      await updateDoc(doc(db, 'tickets', ticket.docId), {"status": formData.clinic});
+      // Reset the form fields
+      
+      if (formData.idCard && formData.idCard.length !== 9) {
+        alert("מספר תעודת הזהות צריך להיות בדיוק 9 ספרות");
+        return;
+      }
+      if (formData.social_worker_number && formData.social_worker_number.length !== 10){
+        if (formData.social_worker_number[0] !== "0" || formData.social_worker_number[1] !== "5"){
+          alert("מספר הפלאפון צריך להיות זמין.\n לדוגמא (054-123-1324)");
+          return;
+        }
+        alert("מספר הפלאפון צריך להיות 10 ספרות");
+        return;
+      }
+      console.log('Ticket submitted successfully!');
+      sendMailEmergency(e);
   } catch (error) {
     console.error('Error submitting ticket:', error);
+    alert('Error submitting ticket: check your details and submit again', error)
   }
   };
     let content = null;
@@ -92,6 +105,9 @@
         <div>
           <label htmlFor="idCard">:מספר תעודת זהות</label>
           <input type="number" id="idCard" required value={formData.idCard} onChange={handleInputChange}/>
+
+          <label htmlFor="fullName">:שם מלא</label>
+          <input type="text" id="fullName" required value={formData.fullName} onChange={handleInputChange} style={{direction: 'rtl'}}/>
 
           <label htmlFor="social_worker_name">:שם עובד סוציאלי</label>
           <input type="text" id="social_worker_name" required  style={{ width: '150px', textAlign: 'right' }} value={formData.social_worker_name} onChange={handleInputChange}/>
@@ -108,54 +124,17 @@
           <label htmlFor="queue">:שעה</label>
           <input type="time" id="queue" required value={formData.queue} onChange={handleInputChange}/>
 
-          <h4>:סיבת הפנייה</h4>
-          <textarea name='reason' value={formData.reason} id = "referral_reason" onChange={(e) => handleSelection(e)} required/>
+          <label htmlFor='reason'>:סיבת הפנייה</label>
+          <textarea type="text" name='reason' value={formData.reason} id = "referral_reason" onChange={(e) => handleSelection(e)}  style={{direction: 'rtl'}} required/>
 
-          <h4>:מרפאה מפנה</h4>
-          <label>
-            <input
-              type="radio"
-              name="referral_clinic"
-              value="sundayClinic"
-              checked={formData.referral_clinic === 'sundayClinic'}
-              onChange={(e) =>handleSelection(e)}
-              id = "referral_clinic"
-              required
-            />
-            מרפאת יום א
-          </label>
-          <label>
-            <input
-              type="radio"
-              name="referral_clinic"
-              value="firstAidClinic"
-              checked={formData.referral_clinic === 'firstAidClinic'}
-              onChange={(e) =>handleSelection(e)}
-              id = "referral_clinic"
-              required
-            />
-            מרפאת עזרה ראשונה
-          </label>
-          <label>
-            <input
-              type="radio"
-              name="referral_clinic"
-              value="other"
-              checked={formData.referral_clinic === 'other'}
-              onChange={(e) =>handleSelection(e)}
-              id = "referral_clinic"
-              required
-            />
-            :אחר
-            <input type="text" value={formData.referral_clinic}  style={{ width: '150px', textAlign: 'right' }}  onChange={(e) =>handleSelection(e)} required/>
-          </label>
+          <label htmlFor='referral_clinic'>:מרפאה מפנה</label>
+          <input type="text" name = 'referral_clinic' value={formData.referral_clinic} id='referral_clinic' onChange={(e) =>handleSelection(e)}  style={{direction: 'rtl'}} required/>
         </div>
       );
 
     return (
       <div>
-        <h2>קביעת תור למרפאת מיון</h2>
-        <h1>{formData.clinic}</h1>
+        <h1>קביעת תור למרפאת מיון</h1>
         {content}
           <button type="submit" onClick={handleSubmit}>
           לקביעת תור

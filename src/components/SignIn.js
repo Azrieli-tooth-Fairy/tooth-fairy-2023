@@ -53,7 +53,7 @@ const handleSubmit = async (e) => {
       .then(() => {
         handleSubmit();
         console.log('signIn successful');
-        alert("signIn successful!");
+        alert("משתמש נוסף בהצלחה");
         form.reset();
       })
       .catch((error) => {

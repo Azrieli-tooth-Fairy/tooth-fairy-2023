@@ -1,5 +1,5 @@
   import React, { useState } from 'react';
-  import { collection, addDoc } from 'firebase/firestore';
+  import { collection, addDoc , query, where, getDocs } from 'firebase/firestore';
   import { db } from '../firebase'; // Import the Auth and Firestore instances from firebase.js
   import './PatientForm.css'
 
@@ -17,7 +17,8 @@
           verified: false,
           status: ""
       });
-
+  
+  
       const handleInputChange = (event) => {
           const { id, value } = event.target;
           setFormData((prevFormData) => ({
@@ -26,23 +27,39 @@
           }));
         };
 
-    const handleSubmit = async (e) => {
-      e.preventDefault();
-      // Create a new document in the "patients" collection with the form data
-      try {
-          const patientsCollectionRef = collection(db, 'tickets');
-          await addDoc(patientsCollectionRef, formData);
-        // Reset the form fields
-        console.log('Patient submitted successfully!');
-        alert("Patient submitted successfully!")
-      } catch (error) {
-        console.error('Error submitting patient:', error);
-      }
-    };
+        const handleSubmit = async (e) => {
+          e.preventDefault();
+        
+          // Check if a patient with the given ID already exists
+          const existingPatientQuery = query(
+            collection(db, 'tickets'),
+            where('idCard', '==', formData.idCard)
+          );
+          const existingPatientSnapshot = await getDocs(existingPatientQuery);
+          
+          if (!existingPatientSnapshot.empty) {
+            console.log('Patient already exists!');
+            alert('מטופל עם מספר תעודת זהות זה כבר קיים!');
+            return;
+          }
+        
+          // Create a new document in the "tickets" collection with the form data
+          try {
+            const patientsCollectionRef = collection(db, 'tickets');
+            await addDoc(patientsCollectionRef, formData);
+        
+            // Reset the form fields
+            console.log('Patient submitted successfully!');
+            alert('מטופל נוסף בהצלחה');
+          } catch (error) {
+            console.error('Error submitting patient:', error);
+          }
+        };
 
     return (
       <div>
-        <h2>פתיחת כרטיס למטופל</h2>
+        <h1>פתיחת כרטיס למטופל</h1>
+        <p></p>
         <form onSubmit={handleSubmit}>
           <div>
             <label htmlFor="fullName">:שם מלא</label>
@@ -52,6 +69,7 @@
               value={formData.fullName}
               onChange={handleInputChange}
               required
+              style={{ width: '150px', textAlign: 'right' }}
             />
           </div>
           <div>
@@ -61,16 +79,18 @@
             id="nickName"
             value={formData.nickName}
             onChange={handleInputChange}
+            style={{ width: '150px', textAlign: 'right' }}
           />
           </div>
           <div>
             <label htmlFor="idCard">:מספר תז או דרכון</label>
             <input
-              type="text"
+              type="number"
               id="idCard"
               value={formData.idCard}
               onChange={handleInputChange}
               required
+              style={{ width: '150px', textAlign: 'right' }}
             />
           </div>
           <div>
@@ -111,6 +131,7 @@
               value={formData.organization}
               onChange={handleInputChange}
               required
+              style={{ width: '150px', textAlign: 'right' }}
             />
           </div>
           <div>
@@ -121,13 +142,14 @@
               value={formData.socialWorker}
               onChange={handleInputChange}
               required
+              style={{ width: '150px', textAlign: 'right' }}
             />
           </div>
           <div>
             <label htmlFor="phoneNumber">:מספר פלאפון של העובד סוציאלי</label>
             <input
               type="tel"
-              pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
+              // pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
               id="phoneNumber"
               value={formData.phoneNumber}
               onChange={handleInputChange}
@@ -150,25 +172,18 @@
           <div>
             <label htmlFor="comments">:הערות נוספות</label>
             <textarea
+              type='text'
               id="comments"
               value={formData.comments}
               onChange={handleInputChange}
               rows={2}
+              style={{ width: '150px', textAlign: 'right' }}
             />
           </div>
           <div>
-            <label>
-              <input
-                id = "verify"
-                type="checkbox"
-                value={formData.verified}
-              //   if checked
-
-                onChange={handleInputChange}
-                required
-              />
-              .אני מאשר שכל המידע שמסרתי מדוייק
-            </label>
+          <label htmlFor="isAccept">"אני מאשר/ת כי המטופל/ת עליו/ה הזנתי את הפרטים לעיל נשלח/ת ל"פיית השיניים</label>
+            <label htmlFor="isAccept">מטעם העמותה ו/או הארגון שצוינו לעיל</label>
+            <input type="checkbox" id="verified" name="verified" value={formData.verified} onChange={handleInputChange} required/><br />
           </div>
           <button type="submit">שלח</button>
         </form>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { collection, query, where, getDocs, deleteDoc, doc } from 'firebase/firestore';
+import { collection, query, where, getDocs, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase'; // Import the Firestore instance from firebase.js
 import './CancelAppointment.css'; // Import the CSS file for styling
 
@@ -26,13 +26,20 @@ const CancelAppointment = () => {
       getAppointments();
     }
   }, [patientId]);
-  
 
   const handleCancelAppointment = async (appointmentId) => {
     try {
       await deleteDoc(doc(db, 'appointments', appointmentId));
       console.log('Appointment canceled successfully!');
-      alert('Appointment canceled successfully!');
+      alert("התור בוטל בהצלחה!\nסטאטוס מטופל כעת כללי");
+
+      // Update the "status" field in the "tickets" collection to "general"
+      const ticketsCollectionRef = collection(db, 'tickets');
+      const querySnapshot = await getDocs(ticketsCollectionRef);
+      
+      querySnapshot.forEach(async (doc) => {
+        await updateDoc(doc.ref, { status: 'general' });
+      });
 
       // Remove the canceled appointment from the list
       setAppointments((prevAppointments) =>
@@ -51,13 +58,14 @@ const CancelAppointment = () => {
 
   return (
     <div>
-      <h2>ביטול תור</h2>
+      <h1>ביטול תור</h1>
       <form onSubmit={handleFormSubmit}>
-      <button type="submit">הצג פגישות</button>
+       
         <label htmlFor="patientId"></label>
         <input type="text" id="patientId" name="patientId" placeholder="             הכנס תעודת זהות" required />
+        <button type="submit">הצג פגישות</button>
       </form>
-       {/* {patientId && appointments.length === 0 && (
+      {/* {patientId && appointments.length === 0 && (
         alert("There is no appointments for this ID. \nMake sure the ID is true.")
        )} */}
       {appointments.length > 0 && (

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { logInWithEmailAndPassword , db } from '../firebase.js';
 import { collection, getDocs, query, where} from 'firebase/firestore';
+import './LogIn.css';
 
 function LogIn(props) {
   const [email, setEmail] = useState('');
@@ -35,10 +36,12 @@ function LogIn(props) {
 
   return (
     <div className="login-container">
-      <h2>Login</h2>
-      <form onSubmit={handleLogin}>
+      <h1>Login</h1>
+      <p></p>
+      <form className='login-form' onSubmit={handleLogin}>
         <div className="form-group">
-          <label htmlFor="email">Email:</label>
+          <h2>Email:</h2>
+          {/* <label htmlFor="email">Email:</label> */}
           <input
             type="email"
             id="email"
@@ -49,7 +52,8 @@ function LogIn(props) {
           />
         </div>
         <div className="form-group">
-          <label htmlFor="password">Password:</label>
+          {/* <label htmlFor="password">Password:</label> */}
+          <h2>Password:</h2>
           <input
             type="password"
             id="password"

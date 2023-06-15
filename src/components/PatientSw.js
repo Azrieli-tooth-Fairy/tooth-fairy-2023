@@ -20,7 +20,8 @@ const PatientSw = () => {
 
   return (
     <div>
-      <h2>חיפוש מטופלים</h2>
+      <h1>חיפוש מטופלים</h1>
+      <p></p>
       <div>
         <input
           type="text"
@@ -30,38 +31,38 @@ const PatientSw = () => {
         />
         <button onClick={handleSearch}>Search</button>
       </div>
-      {ticketData ? (
+      {ticketData && searchId !== "" ? (
         <div className="ticket-data">
           <h3>פרטי מטופלים</h3>
           <table>
             <tbody>
               <tr>
-                <td>סטאטוס</td>
-                <td>{ticketData.status}</td>
-              </tr>
-              <tr>
-                <td>שם העמותה</td>
-                <td>{ticketData.organization}</td>
-              </tr>
-              <tr>
-                <td>מספר פלאפון</td>
-                <td>{ticketData.phoneNumber}</td>
-              </tr>
-              <tr>
-                <td>מגדר</td>
-                <td>{ticketData.gender}</td>
-              </tr>
-              <tr>
-                <td>כינוי</td>
-                <td>{ticketData.nickName}</td>
-              </tr>
-              <tr>
-                <td>שם מלא</td>
-                <td>{ticketData.fullName}</td>
-              </tr>
-              <tr>
-                <td>תעודת זהות</td>
                 <td>{ticketData.idCard}</td>
+                <td>תעודת זהות</td>
+              </tr>
+              <tr>
+                  <td>{ticketData.fullName}</td>
+                <td>שם מלא</td>
+              </tr>
+              <tr>
+                <td>{ticketData.nickName}</td>
+                <td>כינוי</td>
+              </tr>
+              <tr>
+                <td>{ticketData.phoneNumber}</td>
+                <td>מספר פלאפון</td>
+              </tr>
+              <tr>
+                <td>{ticketData.gender}</td>
+                <td>מגדר</td>
+              </tr>
+              <tr>
+                <td>{ticketData.organization}</td>
+                <td>שם העמותה</td>
+              </tr>
+              <tr>
+                <td>{ticketData.status}</td>
+                <td>סטאטוס</td>
               </tr>
             </tbody>
           </table>

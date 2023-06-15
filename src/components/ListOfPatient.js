@@ -27,8 +27,12 @@ const PatientList = () => {
       if (searchId.trim() === '') {
         setFilteredPatients(patients);
       } else {
+        // const filtered = patients.filter(
+        //   (patient) => patient.id && patient.id.toLowerCase().indexOf(searchId.toLowerCase()) !== -1);
         const filtered = patients.filter(
-          (patient) => patient.id && patient.id.toLowerCase().indexOf(searchId.toLowerCase()) !== -1);
+          (patient) => patient.idCard && patient.idCard.toLowerCase().indexOf(searchId.toLowerCase()) !== -1
+        );
+        
         setFilteredPatients(filtered);
       }
     };
@@ -42,7 +46,7 @@ const PatientList = () => {
       const docRef = doc(db, 'tickets', id);
       await deleteDoc(docRef);
       console.log('User deleted successfully');
-      alert("מחיקת משתמש בוצעה בהצלחה")
+      alert("מחיקת משתמש בוצעה בהצלחה. רענן דף לראות רשימה מעודכנת")
     } catch (error) {
       console.log('Error deleting user:', error);
     }
@@ -51,7 +55,8 @@ const PatientList = () => {
   return (
     <div className="PatientList">
       <div className="search-bar">
-      <h2>רשימת מטופלים</h2>
+      <h1>רשימת מטופלים</h1>
+      <p></p>
         <input
           type="text"
           placeholder="Search by ID..."
@@ -67,7 +72,7 @@ const PatientList = () => {
               <th>פעולות</th>
               <th>סטאטוס</th>
               <th>שם עמותה</th>
-              <th>מייל עובד סוציאלי</th>
+              <th>נייד עובד סוציאלי</th>
               <th>שם עובד סוציאלי</th>
               <th>שם מלא</th>
               <th>תעודת זהות</th> {/* Add a column for actions */}
@@ -85,7 +90,6 @@ const PatientList = () => {
             <td>{patient.socialWorker}</td>
             <td>{patient.fullName}</td>
             <td>{patient.idCard}</td>
-            
           </tr>
         ))}
           </tbody>

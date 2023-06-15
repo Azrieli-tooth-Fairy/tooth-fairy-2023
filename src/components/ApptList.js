@@ -28,15 +28,27 @@ const AppointmentsTable = () => {
   
 
   // Function to check if a date is in the future // need to Check if its good
+  // const isFutureDate = (dateString) => {
+  //   const today = new Date();
+  //   const appointmentDate = new Date(dateString);
+  //   return appointmentDate >= today;
+  // };
   const isFutureDate = (dateString) => {
+    if (!dateString) {
+      return false; // Return false if the dateString is undefined or null
+    }
     const today = new Date();
-    const appointmentDate = new Date(dateString);
+    const [day, month, year] = dateString.split('-');
+    const appointmentDate = new Date(`${year}-${month}-${day}`);
     return appointmentDate >= today;
   };
+  
+  
 
   return (
     <div>
-      <h2>Appointments</h2>
+      <h1>פרטי תורים</h1>
+      <p></p>
       <table>
         <thead>
           <tr>
@@ -45,6 +57,7 @@ const AppointmentsTable = () => {
             <th>מרפאה</th>
             <th>שעה</th>
             <th>תאריך</th>
+            <th>שם מלא</th>
             <th>תז</th>
 
           </tr>
@@ -55,10 +68,11 @@ const AppointmentsTable = () => {
               return (
                 <tr key={index}>
                   <td>{appointment.reason}</td>
-                  <td>{appointment.referralClinic}</td>
+                  <td>{appointment.referral_clinic}</td>
                   <td>{appointment.clinic}</td>
                   <td>{appointment.queue}</td>
                   <td>{appointment.date}</td>
+                  <td>{appointment.fullName}</td>
                   <td>{appointment.idCard}</td>
                 </tr>
               );
@@ -70,6 +84,42 @@ const AppointmentsTable = () => {
       </table>
     </div>
   );
+
+  // return (
+  //   <div>
+  //     <h1>פרטי תורים</h1>
+  //     <p></p>
+  //     <table>
+  //       <thead>
+  //         <tr>
+  //           <th>סיבת הפנייה</th>
+  //           <th>מרפאה מפנה</th>
+  //           <th>מרפאה</th>
+  //           <th>שעה</th>
+  //           <th>תאריך</th>
+  //           <th>תז</th>
+
+  //         </tr>
+  //       </thead>
+  //       <tbody>
+  //         {appointments.map((appointment, index) => {
+            
+  //             return (
+  //               <tr key={index}>
+  //                 <td>{appointment.reason}</td>
+  //                 <td>{appointment.referral_clinic}</td>
+  //                 <td>{appointment.clinic}</td>
+  //                 <td>{appointment.queue}</td>
+  //                 <td>{appointment.date}</td>
+  //                 <td>{appointment.idCard}</td>
+  //               </tr>
+  //             );
+            
+  //         })}
+  //       </tbody>
+  //     </table>
+  //   </div>
+  // );
 };
 
 export default AppointmentsTable;

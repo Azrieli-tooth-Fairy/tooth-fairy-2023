@@ -16,8 +16,7 @@ import CancelAppointment from './components/CancelAppointment';
 import DeleteUser from './components/DeleteUser'
 import PatientSw from './components/PatientSw'
 import StatusChange from './components/StatusChange'
-
-
+import Footer from './components/Footer'
 import SwList from './components/SwList';
 import { BrowserRouter, Routes, Route, Outlet, Navigate } from 'react-router-dom';
 import '@fortawesome/fontawesome-free/css/all.min.css';
@@ -44,28 +43,28 @@ function App() {
   return (
     <div id="all">
       <div className="App" >
-        <BrowserRouter>
-        {isLoggedIn ? <NavBar role = {role}/> : <></>}
-          <Routes>
-            <Route path="/" element={<Outlet />}>
-              <Route index element={isLoggedIn ? <></> : <LogIn onLogin={handleLogin} setUserId = {setUserIdState}/>} />
-              <Route path="sign_in" element={<SignIn />} />
-              <Route path="apptList" element={<ApptList />} />
-              <Route path="ticket_form" element={<TicketForm />} />
-              <Route path="cancel_sunday_clinic" element={<CancelSundayClinic />} />
-              <Route path="patient_form" element={<PatientForm />} />
-              <Route path="list_of_patient" element={<ListOfPatient />} />
-              <Route path="Clinic_Booking_page" element={<ClinicBookingPage />} />
-              <Route path="emergence_appt" element={<EmergenceAppt />} />
-              <Route path="cancel_appointment" element={<CancelAppointment />} />
-              <Route path="sw_list" element={<SwList />} />
-              <Route path="patient_sw" element={<PatientSw />} />
-              <Route path="status_change" element={<StatusChange />} />
-              <Route path="delete_user" element={<DeleteUser />} />
-              <Route path="*" element={isLoggedIn ? <></> : <LogIn onLogin={handleLogin} setUserId = {setUserIdState}/>} />
-            </Route>
-          </Routes>
-        </BrowserRouter>
+          <BrowserRouter>
+          {isLoggedIn ? <NavBar role = {role}/> : <></>}
+            <Routes>
+              <Route path="/" element={<Outlet />}>
+                <Route index element={isLoggedIn ? <></> : <LogIn onLogin={handleLogin} setUserId = {setUserIdState}/>} />
+                <Route path="sign_in" element={<SignIn />} />
+                <Route path="apptList" element={<ApptList />} />
+                <Route path="ticket_form" element={<TicketForm />} />
+                <Route path="cancel_sunday_clinic" element={<CancelSundayClinic />} />
+                <Route path="patient_form" element={<PatientForm />} />
+                <Route path="list_of_patient" element={<ListOfPatient />} />
+                <Route path="Clinic_Booking_page" element={<ClinicBookingPage />} />
+                <Route path="emergence_appt" element={<EmergenceAppt />} />
+                <Route path="cancel_appointment" element={<CancelAppointment />} />
+                <Route path="sw_list" element={<SwList />} />
+                <Route path="patient_sw" element={<PatientSw />} />
+                <Route path="status_change" element={<StatusChange />} />
+                <Route path="delete_user" element={<DeleteUser />} />
+                <Route path="*" element={isLoggedIn ? <></> : <LogIn onLogin={handleLogin} setUserId = {setUserIdState}/>} />
+              </Route>
+            </Routes>
+          </BrowserRouter>
       </div>
     </div>
   );

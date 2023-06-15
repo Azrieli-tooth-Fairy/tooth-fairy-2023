@@ -8,83 +8,174 @@ function Navbar(props) {
   const role = props.role;
   const location = useLocation();
 
+
+  // const NavigationGrid = () => {
+  //   return (
+  //     <div className='cardsdisplay'>
+  //       {location.pathname === '/' && (
+  //         <CardGroup className='navgrid-container'>
+  //           {console.log(cards)}
+  //           {cards.map((card, index) => (
+  //             card.roles.includes(role) ? (
+  //               <div className='cards-place' key={index}>
+  //                 {/* <Card> */}
+  //                 <Card style={{ width: '18rem' }}>
+  //                   <Card.Img variant="top" src={card.icon} />
+  //                   <Card.Footer>
+  //                     <Link to={card.link} className="nav-link">{card.headline}</Link>        
+  //                   </Card.Footer>
+  //                 </Card>
+  //               </div>
+  //             ) : null
+  //           ))}
+  //         </CardGroup>
+  //       )}
+  //     </div>
+  //   );
+  // };
+
+
+  // const cards = [
+  //   {
+  //     // icon: require('./LOGIN-IMG.png'),
+  //     icon: require('../Img-src/open-ticket.png'),
+  //     headline: 'פתיחת כרטיס למטופל',
+  //     link: '/patient_form',
+  //     roles: ["job_owner"]
+  //   },
+  //   {
+  //     // icon: require('./LOGIN-IMG.png') ,
+  //     icon: require('../Img-src/clinic-book.jpg'),
+  //     headline: 'תור למרפאה',
+  //     link: '/Clinic_Booking_page',
+  //     roles: ["job_owner"]
+  //   },
+  //   {
+  //     icon: require('./LOGIN-IMG.png') ,
+  //     headline: 'קביעת תור למיון',
+  //     link: '/emergence_appt',
+  //     roles: ["job owner"]
+  //   },
+  //   {
+  //     icon:require('./LOGIN-IMG.png') ,
+  //     headline: 'פרטי תורים',
+  //     link: '/appt_list',
+  //     roles: ["job owner"]
+  //   },
+  //   {
+  //     icon: require('./LOGIN-IMG.png'),
+  //     headline: 'רשימת מטופלים',
+  //     link: '/list_of_patient',
+  //     roles: ["job owner", "student", "doctor"]
+  //   },
+  //   {
+  //     icon: require('./LOGIN-IMG.png'),
+  //     headline: 'שינוי סאטאטוס',
+  //     link: '/status_change',
+  //     roles: ["job owner", "student", "doctor"]
+  //   },
+  //   {
+  //     icon: require('./LOGIN-IMG.png'),
+  //     headline: 'ביטול תור',
+  //     link: '/cancel_appointment',
+  //     roles: ["job owner", "social worker"]
+  //   },
+  //   {
+  //     icon: require('./LOGIN-IMG.png'),
+  //     headline: 'מחיקת משתמש',
+  //     link: '/delete_user',
+  //     roles: ["job owner"]
+  //   }
+  // ];
   const NavigationGrid = () => {
+    //const role = "job_owner"; // Update this value with the actual role
+    const filteredCards = cards.filter((card) => card.roles.includes(role));
     return (
-      <div className='cardsdisplay'>
-        {location.pathname === '/' && (
-          <CardGroup className='navgrid-container'>
-            {console.log(cards)}
-            {cards.map((card, index) => (
-              card.roles.includes(role) ? (
-                <div className='cards-place' key={index}>
-                  {/* <Card> */}
-                  <Card style={{ width: '18rem' }}>
-                    <Card.Img variant="top" src={card.icon} />
-                    <Card.Footer>
-                      <Link to={card.link} className="nav-link">{card.headline}</Link>        
-                    </Card.Footer>
-                  </Card>
-                </div>
-              ) : null
+      <div className="cardsdisplay">
+        {location.pathname === "/" && (
+          <CardGroup className="navgrid-container-top">
+            {filteredCards.map((card, index) => (
+              <div className="cards-place" key={index}>
+                <Card style={{ width: "18rem"}}>
+                  <Card.Img variant="top" src={card.icon} />
+                  <Card.Footer>
+                    <Link to={card.link} className="nav-link">
+                      {card.headline}
+                    </Link>
+                  </Card.Footer>
+                </Card>
+              </div>
             ))}
           </CardGroup>
         )}
       </div>
     );
   };
-
-
+  
   const cards = [
     {
-      // icon: require('./LOGIN-IMG.png'),
-      icon: require('../Img-src/open-ticket.png'),
-      headline: 'פתיחת כרטיס למטופל',
-      link: '/patient_form',
-      roles: ["job_owner"]
+      icon: require("../Img-src/openTicket.png"),
+      headline: "פתיחת כרטיס למטופל",
+      link: "/patient_form",
+      roles: ["job_owner", "social_worker"],
     },
     {
-      // icon: require('./LOGIN-IMG.png') ,
-      icon: require('../Img-src/clinic-book.jpg'),
-      headline: 'תור למרפאה',
-      link: '/Clinic_Booking_page',
-      roles: ["job_owner"]
+      icon: require("../Img-src/makeAppt.png"),
+      headline: "תור למרפאה",
+      link: "/Clinic_Booking_page",
+      roles: ["job_owner", "social_worker"],
     },
     {
-      icon: require('./LOGIN-IMG.png') ,
-      headline: 'קביעת תור למיון',
-      link: '/emergence_appt',
-      roles: ["job owner"]
+      icon: require("../Img-src/apptList.png"),
+      headline: "פרטי תורים",
+      link: "/apptList",
+      roles: ["job_owner", "student", "doctor"],
+    },
+  ];
+  const NavigationGrid2 = () => {
+    //const role = "job_owner"; // Update this value with the actual role
+    const filteredCards2 = cards2.filter((card) => card.roles.includes(role));
+  
+    return (
+      <div className="cardsdisplay">
+        {location.pathname === "/" && (
+          <CardGroup className="navgrid-container">
+            {filteredCards2.map((card, index) => (
+              <div className="cards-place" key={index}>
+                <Card style={{ width: "18rem"}}>
+                  <Card.Img variant="top" src={card.icon} />
+                  <Card.Footer>
+                    <Link to={card.link} className="nav-link">
+                      {card.headline}
+                    </Link>
+                  </Card.Footer>
+                </Card>
+              </div>
+            ))}
+          </CardGroup>
+        )}
+      </div>
+    );
+  };
+  const cards2 = [
+    {
+      icon: require("../Img-src/patientList.png"),
+      headline: "רשימת מטופלים",
+      link: "/list_of_patient",
+      roles: ["job_owner", "student", "doctor"],
     },
     {
-      icon:require('./LOGIN-IMG.png') ,
-      headline: 'פרטי תורים',
-      link: '/appt_list',
-      roles: ["job owner"]
+      icon: require("../Img-src/cancel.png"),
+      headline: "ביטול תור",
+      link: "/cancel_appointment",
+      roles: ["job_owner", "social_worker"],
     },
     {
-      icon: require('./LOGIN-IMG.png'),
-      headline: 'רשימת מטופלים',
-      link: '/list_of_patient',
-      roles: ["job owner", "student", "doctor"]
+      icon: require("../Img-src/search.png"),
+      headline: "חיפוש מטופל לפי תז",
+      link: "/patient_sw",
+      roles: ["social_worker", "job_owner", "student", "doctor"],
     },
-    {
-      icon: require('./LOGIN-IMG.png'),
-      headline: 'שינוי סאטאטוס',
-      link: '/status_change',
-      roles: ["job owner", "student", "doctor"]
-    },
-    {
-      icon: require('./LOGIN-IMG.png'),
-      headline: 'ביטול תור',
-      link: '/cancel_appointment',
-      roles: ["job owner", "social worker"]
-    },
-    {
-      icon: require('./LOGIN-IMG.png'),
-      headline: 'מחיקת משתמש',
-      link: '/delete_user',
-      roles: ["job owner"]
-    }
   ];
 
   return (
@@ -135,7 +226,7 @@ function Navbar(props) {
             ביטול מרפאת יום א
           </Link>
         </div> : ""}
-        {role === "social_worker" ? 
+        {role === "social_worker" || "job_owner" || role === "student" || role === "doctor"? 
         <div className="nav-item">
           <Link to="/patient_sw" className="nav-link">
             חיפוש מטופל ע"פ תז
@@ -173,6 +264,7 @@ function Navbar(props) {
       </div>
     </nav>
     <NavigationGrid/>
+    <NavigationGrid2/>
   </div>
   );
 }
