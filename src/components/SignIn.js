@@ -144,7 +144,7 @@ const handleSubmit = async (e) => {
 
     <div className="col-12">
       <label htmlFor="school_year" className="form-label">:שנת לימודים</label>
-      <input type="text" className="form-control" id="school_year" name="school_year" value={formData.school_year} onChange={handleInputChange} required style={{ width: '150px', textAlign: 'right' }} />
+      <input type="text" className="form-control" id="school_year" name="school_year" value={formData.school_year} onChange={handleInputChange} style={{ width: '150px', textAlign: 'right' }} />
     </div>
 
     <div className="col-12 text-center">

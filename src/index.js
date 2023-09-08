@@ -1,10 +1,12 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client';
+import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 // Import the functions you need from the SDKs you need
-const root = ReactDOM.createRoot(document.getElementById('root'));
+// const root = ReactDOM.createRoot(document.getElementById('root'));
 
-root.render(
-    <App/>
-);
+// root.render(
+//     <App/>
+// );
+console.log("starting index.js" ) ;
+ReactDOM.render(<App />, document.getElementById('root'));

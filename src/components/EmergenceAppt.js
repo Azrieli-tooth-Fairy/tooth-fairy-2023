@@ -57,7 +57,7 @@
       };
 
     emailjs
-        .send(serviceID, templateID, params,"IY_q-mRXPfxKZKMHs") // need to hide this key!
+        .send(serviceID, templateID, params,"NmzVKYVEgP5dgNGqU") // need to hide this key!
         .then((res)=> {
             alert("הודעתך נשלחה בהצלחה");
         })

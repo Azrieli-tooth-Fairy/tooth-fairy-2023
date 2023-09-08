@@ -90,17 +90,65 @@ const generateFirstAidDates = () => {
         social_worker_number: formData.social_worker_number,
         social_worker_mail: formData.social_worker_mail,
         referral_clinic: formData.referralClinic,
-        reason: formData.reason,
-
+        reason: formData.reason
       };
 
     emailjs
-        .send(serviceID, templateID, params,"IY_q-mRXPfxKZKMHs") // need to hide this key!
+        .send(serviceID, templateID, params,"NmzVKYVEgP5dgNGqU") // need to hide this key!
         .then((res)=> {
             //alert(" הודעתך נשלחה בהצלחה");
         })
   }
-  
+  const sendMailFirstAid = (e) => {
+    e.preventDefault();
+
+    const serviceID = "toothFariyAdmin";
+    const templateID = "template_hpqzdzr";
+    // const templateID = "template_jhtva3r"; // for test
+    var params = {
+        idCard: formData.idCard,
+        name: formData.fullName,
+        social_worker_name: formData.social_worker_name,
+        social_worker_number: formData.social_worker_number,
+        social_worker_mail: formData.social_worker_mail,
+        referral_clinic: formData.referralClinic,
+        reason: formData.reason,
+        date: formData.date,
+        queue: formData.queue,
+      };
+
+    emailjs
+        .send(serviceID, templateID, params,"NmzVKYVEgP5dgNGqU") // need to hide this key!
+        .then((res)=> {
+            //alert(" הודעתך נשלחה בהצלחה");
+        })
+  }
+
+  const sendMailSunday = (e) => {
+    e.preventDefault();
+
+    const serviceID = "toothFariyAdmin";
+    const templateID = "template_20yctah";
+    // const templateID = "template_jhtva3r"; // for test
+    var params = {
+        idCard: formData.idCard,
+        name: formData.fullName,
+        social_worker_name: formData.social_worker_name,
+        social_worker_number: formData.social_worker_number,
+        social_worker_mail: formData.social_worker_mail,
+        referral_clinic: formData.referralClinic,
+        reason: formData.reason,
+        date: formData.date,
+        queue: formData.queue
+
+      };
+
+    emailjs
+        .send(serviceID, templateID, params,"NmzVKYVEgP5dgNGqU") // need to hide this key!
+        .then((res)=> {
+            //alert(" הודעתך נשלחה בהצלחה");
+        })
+  }
 const [formData, setFormData] = useState({
   idCard: "",
   fullName: "",
@@ -290,6 +338,14 @@ const handleSubmit = async (e) => {
       } 
     }
     await updateDoc(doc(db, 'tickets', ticket.docId), {"status": formData.clinic});
+    if (formData.clinic === 'sunday') {
+      sendMailSunday(e);
+      alert("בקשתך בוצעה בהצלחה.\n במידה והתור יאושר, תקבל מייל עם פרטי התור")
+    }
+    if (formData.clinic === 'firstAid') {
+      sendMailFirstAid(e);
+      alert("בקשתך בוצעה בהצלחה.\n במידה והתור יאושר, תקבל מייל עם פרטי התור")
+    }
     if (formData.clinic === 'emergency_wait') {
       sendMailEmergency(e);
       alert("בקשתך בוצעה בהצלחה.\n במידה והתור יאושר, תקבל מייל עם פרטי התור")
